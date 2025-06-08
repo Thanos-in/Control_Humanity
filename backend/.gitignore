@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django stuff:
+*.log
+*.pot
+*.pyc
+*.sqlite3
+db.sqlite3
+media/
+staticfiles/
+static/
+local_settings.py
+
+# Environment
+.env
+.env.*  # masalan: .env.dev, .env.production
+
+# Virtualenv
+venv/
+ENV/
+env/
+.venv/
+
+# IDE va OS fayllari
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# coverage and test output
+htmlcov/
+.coverage
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# MyPy, Pylint, Bandit va boshqalar
+.mypy_cache/
+.pytest_cache/
+.dmypy.json
+.pyre/
+.pytype/
+
+# Jupyter va IPython
+.ipynb_checkpoints/
+
+# Celery beat fayllari
+celerybeat-schedule
+
+# Docker fayllari (agar ishlatilsa)
+*.pid

@@ -224,7 +224,7 @@ export default {
       await this.createStatus({
         name: this.newStatusName,
         color: this.newStatusColor,
-        project_id: this.projectId,
+        projectId: this.projectId,
         order: this.statuses.length
       })
       this.newStatusName = ''
@@ -234,7 +234,7 @@ export default {
       this.fetchStatuses(this.projectId)
     },
     async removeStatus(statusId) {
-      await this.deleteStatus({ statusId })
+      await this.deleteStatus( statusId )
       this.fetchStatuses(this.projectId)
       this.fetchTasks(this.projectId)
     },
@@ -246,7 +246,7 @@ export default {
       await this.createTask({
         title: this.newTask.title,
         description: this.newTask.description,
-        project_id: this.projectId,
+        projectId: this.projectId,
         status_id: this.newTask.status_id,
         color: this.newTask.color || '#f0f0f0'
       })

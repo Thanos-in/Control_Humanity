@@ -84,11 +84,11 @@ const actions = {
     }
   },
 
-  async createStatus({ commit, rootState }, { name, order, projectId }) {
+  async createStatus({ commit, rootState }, { name, order, projectId, color }) {
     commit('setError', null)
     try {
       const token = rootState.auth.token
-      const payload = { name, order, project: projectId }
+      const payload = { name, order, project: projectId, color }
       const response = await axios.post(
         '/api/tasks/statuses/',
         payload,

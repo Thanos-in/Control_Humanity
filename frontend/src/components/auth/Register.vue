@@ -1,105 +1,105 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-800 p-4">
-    <div class="w-full max-w-xl bg-white/5 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-gray-700">
-      <h2 class="text-3xl font-bold text-amber-400 text-center mb-8 tracking-wide">Create Your Account</h2>
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-400 via-purple-500 to-indigo-700 p-4">
+    <div class="w-full max-w-xl bg-white/10 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-white/20">
+      <h2 class="text-3xl font-bold text-white text-center mb-8 tracking-wide">Создать аккаунт</h2>
 
       <form @submit.prevent="handleRegister" class="space-y-5">
         <div>
-          <label for="username" class="block text-gray-200 font-medium mb-1">Username</label>
+          <label for="username" class="block text-white font-medium mb-1">Имя пользователя</label>
           <input
             v-model="form.username"
             id="username"
             type="text"
-            placeholder="Enter your username"
-            class="w-full p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400"
+            placeholder="Введите имя пользователя"
+            class="w-full p-3 rounded-lg bg-white/10 text-white placeholder-white/70 border border-white/30 focus:outline-none focus:ring-2 focus:ring-white"
           />
         </div>
 
         <div>
-          <label for="email" class="block text-gray-200 font-medium mb-1">Email</label>
+          <label for="email" class="block text-white font-medium mb-1">Электронная почта</label>
           <input
             v-model="form.email"
             id="email"
             type="email"
-            placeholder="Enter your email"
-            class="w-full p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400"
+            placeholder="Введите эл. почту"
+            class="w-full p-3 rounded-lg bg-white/10 text-white placeholder-white/70 border border-white/30 focus:outline-none focus:ring-2 focus:ring-white"
           />
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label for="first_name" class="block text-gray-200 font-medium mb-1">First Name</label>
+            <label for="first_name" class="block text-white font-medium mb-1">Имя</label>
             <input
               v-model="form.first_name"
               id="first_name"
               type="text"
-              placeholder="First name"
-              class="w-full p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400"
+              placeholder="Ваше имя"
+              class="w-full p-3 rounded-lg bg-white/10 text-white placeholder-white/70 border border-white/30 focus:outline-none focus:ring-2 focus:ring-white"
             />
           </div>
           <div>
-            <label for="last_name" class="block text-gray-200 font-medium mb-1">Last Name</label>
+            <label for="last_name" class="block text-white font-medium mb-1">Фамилия</label>
             <input
               v-model="form.last_name"
               id="last_name"
               type="text"
-              placeholder="Last name"
-              class="w-full p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400"
+              placeholder="Ваша фамилия"
+              class="w-full p-3 rounded-lg bg-white/10 text-white placeholder-white/70 border border-white/30 focus:outline-none focus:ring-2 focus:ring-white"
             />
           </div>
         </div>
 
         <div>
-          <label for="role" class="block text-gray-200 font-medium mb-1">Role</label>
+          <label for="role" class="block text-white font-medium mb-1">Роль</label>
           <select
             v-model="form.role"
             id="role"
             disabled
-            class="w-full p-3 rounded-lg bg-gray-700 text-gray-300 border border-gray-600 cursor-not-allowed"
+            class="w-full p-3 rounded-lg bg-white/10 text-white border border-white/30 cursor-not-allowed"
           >
-            <option value="employee" selected>Employee</option>
+            <option value="employee" selected>Сотрудник</option>
           </select>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label for="password" class="block text-gray-200 font-medium mb-1">Password</label>
+            <label for="password" class="block text-white font-medium mb-1">Пароль</label>
             <input
               v-model="form.password"
               id="password"
               type="password"
-              placeholder="Password"
-              class="w-full p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400"
+              placeholder="Введите пароль"
+              class="w-full p-3 rounded-lg bg-white/10 text-white placeholder-white/70 border border-white/30 focus:outline-none focus:ring-2 focus:ring-white"
             />
           </div>
           <div>
-            <label for="password2" class="block text-gray-200 font-medium mb-1">Confirm Password</label>
+            <label for="password2" class="block text-white font-medium mb-1">Подтверждение пароля</label>
             <input
               v-model="form.password2"
               id="password2"
               type="password"
-              placeholder="Repeat password"
-              class="w-full p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400"
+              placeholder="Повторите пароль"
+              class="w-full p-3 rounded-lg bg-white/10 text-white placeholder-white/70 border border-white/30 focus:outline-none focus:ring-2 focus:ring-white"
             />
           </div>
         </div>
 
-        <div v-if="errorMessage" class="text-red-400 text-sm mt-2">
+        <div v-if="errorMessage" class="text-red-300 text-sm mt-2">
           {{ errorMessage }}
         </div>
 
         <button
           type="submit"
           :disabled="loading"
-          class="w-full mt-4 bg-gradient-to-r from-amber-400 to-emerald-400 text-gray-900 font-semibold py-3 rounded-xl shadow-lg hover:from-amber-500 hover:to-emerald-500 transition duration-300"
+          class="w-full mt-4 bg-white text-indigo-700 font-semibold py-3 rounded-xl shadow-xl hover:bg-indigo-100 transition duration-300"
         >
-          <span v-if="loading">Registering...</span>
-          <span v-else>Sign Up</span>
+          <span v-if="loading">Регистрация...</span>
+          <span v-else>Зарегистрироваться</span>
         </button>
       </form>
     </div>
-  </div>
-</template>
+  </div> 
+  </template>
 
 
 
@@ -135,11 +135,11 @@ export default {
         !this.form.password ||
         !this.form.password2
       ) {
-        this.errorMessage = 'All fields are required.'
+        this.errorMessage = 'Пожалуйста, заполните все поля.'
         return
       }
       if (this.form.password !== this.form.password2) {
-        this.errorMessage = 'Passwords do not match.'
+        this.errorMessage = 'Пароли не совпадают.'
         return
       }
 
@@ -168,10 +168,10 @@ export default {
               .flat()
               .join(' ')
           } else {
-            this.errorMessage = data || 'Registration failed.'
+            this.errorMessage = data || 'Не удалось зарегистрироваться.'
           }
         } else {
-          this.errorMessage = 'Registration failed. Please try again.'
+          this.errorMessage = 'Ошибка при регистрации. Пожалуйста, проверьте введённые данные.'
         }
       } finally {
         this.loading = false

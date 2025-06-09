@@ -1,99 +1,101 @@
 <template>
-  <div class="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
-    <h1 class="text-2xl font-semibold mb-4">User Profile</h1>
+<div class="min-h-screen flex items-center justify-center p-6" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+    <div class="w-full max-w-2xl bg-white/10 backdrop-blur-md rounded-2xl shadow-xl p-8 border border-white/20">
+      <h1 class="text-3xl font-bold text-white text-center mb-8">User Profile</h1>
 
-    <form @submit.prevent>
-      <!-- Username -->
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1" for="username">Username</label>
-        <input
-          v-model="profile.username"
-          id="username"
-          type="text"
-          class="w-full px-3 py-2 border rounded focus:outline-none focus:ring"
-          :disabled="!canEditOwn"
-        />
-      </div>
-
-      <!-- Email -->
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1" for="email">Email</label>
-        <input
-          v-model="profile.email"
-          id="email"
-          type="email"
-          class="w-full px-3 py-2 border rounded focus:outline-none focus:ring"
-          :disabled="!canEditOwn"
-        />
-      </div>
-
-      <!-- First/Last Name -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <form @submit.prevent class="space-y-6">
+        <!-- Username -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1" for="first_name">First Name</label>
+          <label class="block text-sm font-medium text-white mb-1" for="username">Username</label>
           <input
-            v-model="profile.first_name"
-            id="first_name"
+            v-model="profile.username"
+            id="username"
             type="text"
-            class="w-full px-3 py-2 border rounded focus:outline-none focus:ring"
+            class="w-full px-4 py-2 bg-white/10 text-white border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-300"
             :disabled="!canEditOwn"
           />
         </div>
+
+        <!-- Email -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1" for="last_name">Last Name</label>
+          <label class="block text-sm font-medium text-white mb-1" for="email">Email</label>
           <input
-            v-model="profile.last_name"
-            id="last_name"
-            type="text"
-            class="w-full px-3 py-2 border rounded focus:outline-none focus:ring"
+            v-model="profile.email"
+            id="email"
+            type="email"
+            class="w-full px-4 py-2 bg-white/10 text-white border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-300"
             :disabled="!canEditOwn"
           />
         </div>
-      </div>
 
-      <!-- Role -->
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1" for="role">Role</label>
-        <select
-          v-model="profile.role"
-          id="role"
-          class="w-full px-3 py-2 border rounded focus:outline-none focus:ring"
-          :disabled="!canEditRole"
-        >
-          <option value="employee">Employee</option>
-          <option value="manager">Manager</option>
-          <option value="director">Director</option>
-        </select>
-      </div>
+        <!-- First & Last Name -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-white mb-1" for="first_name">First Name</label>
+            <input
+              v-model="profile.first_name"
+              id="first_name"
+              type="text"
+              class="w-full px-4 py-2 bg-white/10 text-white border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-300"
+              :disabled="!canEditOwn"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-white mb-1" for="last_name">Last Name</label>
+            <input
+              v-model="profile.last_name"
+              id="last_name"
+              type="text"
+              class="w-full px-4 py-2 bg-white/10 text-white border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-300"
+              :disabled="!canEditOwn"
+            />
+          </div>
+        </div>
 
-      <!-- Action Buttons -->
-      <div class="flex space-x-4">
-        <!-- Save Profile (only for self) -->
-        <button
-          v-if="canEditOwn"
-          @click="saveProfile"
-          type="button"
-          class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Save Profile
-        </button>
+        <!-- Role -->
+        <div>
+          <label class="block text-sm font-medium text-white mb-1" for="role">Role</label>
+          <select
+            v-model="profile.role"
+            id="role"
+            class="w-full px-4 py-2 bg-white/10 text-white border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-300"
+            :disabled="!canEditRole"
+          >
+            <option value="employee">Employee</option>
+            <option value="manager">Manager</option>
+            <option value="Admin">Admin</option>
+            <option value="director">Director</option>
+          </select>
+        </div>
 
-        <!-- Save Role (only for director editing others) -->
-        <button
-          v-if="canEditRole"
-          @click="saveRole"
-          type="button"
-          class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-        >
-          Save Role
-        </button>
-      </div>
-    </form>
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap gap-4 mt-6">
+          <button
+            v-if="canEditOwn"
+            @click="saveProfile"
+            type="button"
+            class="px-6 py-2 bg-yellow-300 text-gray-900 font-semibold rounded-lg hover:bg-yellow-400 transition duration-300"
+          >
+            Save Profile
+          </button>
 
-    <p v-if="error" class="mt-4 text-red-600">{{ error }}</p>
-    <p v-if="success" class="mt-4 text-green-600">{{ success }}</p>
+          <button
+            v-if="canEditRole"
+            @click="saveRole"
+            type="button"
+            class="px-6 py-2 bg-green-300 text-gray-900 font-semibold rounded-lg hover:bg-green-400 transition duration-300"
+          >
+            Save Role
+          </button>
+        </div>
+      </form>
+
+      <!-- Messages -->
+      <p v-if="error" class="mt-6 text-red-300 text-sm text-center">{{ error }}</p>
+      <p v-if="success" class="mt-6 text-green-300 text-sm text-center">{{ success }}</p>
+    </div>
   </div>
-</template>
+  </template>
 
 <script>
 import axios from 'axios'

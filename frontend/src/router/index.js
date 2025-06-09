@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import store from '../store'
 
 const routes = [
-  { path: '/login', component: () => import('../components/auth/Login.vue') },
+  { path: '/', component: () => import('../components/auth/Login.vue') },
   { path: '/register', component: () => import('../components/auth/Register.vue') },
   { 
     path: '/profile/:userId?',

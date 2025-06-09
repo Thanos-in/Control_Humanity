@@ -32,7 +32,7 @@ const actions = {
     commit('setError', null)
     try {
       await axios.post('/api/projects/', projectData)
-      // Ro'yxatni yangilaymiz
+      // Ro'yxatni yangilanadi!!!
       await dispatch('fetchProjects')
     } catch (err) {
       commit('setError', err.response?.data || 'Failed to create project.')

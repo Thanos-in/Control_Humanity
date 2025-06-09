@@ -1,11 +1,9 @@
 <template>
-  <div class="p-6">
-    <h1 class="text-2xl font-bold mb-4">{{ project.name }}</h1>
+    <h1 class="text-2xl font-bold mb-4 white">{{ project.name }}</h1>
     <p class="mb-6">{{ project.description }}</p>
 
     <!-- Kanban boardni shu yerda chaqiramiz -->
     <KanbanBoard :projectId="projectId" />
-  </div>
 </template>
 
 <script>

@@ -1,37 +1,36 @@
 <template>
-  <div class="p-6 bg-gray-100 min-h-screen">
-    <div class="max-w-3xl mx-auto">
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-3xl font-semibold">Projects</h2>
+    <div class="max-w-4xl mx-auto">
+      <div class="flex items-center justify-between mb-10">
+        <h2 class="text-4xl font-bold text-white">Projects</h2>
         <button
           @click="showForm = true"
-          class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
+          class="bg-white text-purple-700 px-6 py-3 rounded-lg hover:bg-gray-100 shadow-md hover:shadow-lg transition font-semibold text-lg"
         >
           + New Project
         </button>
       </div>
 
       <!-- Xatolik bo'lsa chiqarilsin -->
-      <div v-if="projectError" class="mb-4 text-red-600">
+      <div v-if="projectError" class="mb-6 text-red-100 bg-red-500 p-4 rounded-lg text-lg">
         {{ projectError }}
       </div>
 
       <!-- Loading paytida ko'rsatiladigan holat -->
-      <div v-if="isLoading" class="text-center py-8">
-        <span class="text-gray-500">Loading projects...</span>
+      <div v-if="isLoading" class="text-center py-12">
+        <span class="text-white opacity-90 text-xl">Loading projects...</span>
       </div>
 
       <!-- Project ro'yxati -->
-      <ul v-else class="space-y-4">
+      <ul v-else class="space-y-6">
         <li
           v-for="proj in projects"
           :key="proj.id"
-          class="bg-white p-4 rounded shadow hover:shadow-lg transition"
+          class="bg-white bg-opacity-90 p-6 rounded-2xl shadow-xl hover:shadow-2xl transition transform hover:scale-[1.01] min-h-[160px] flex flex-col justify-between"
         >
-          <router-link :to="`/projects/${proj.id}`" class="block">
-            <h3 class="text-xl font-medium">{{ proj.name }}</h3>
-            <p class="text-gray-600 text-sm">{{ proj.description }}</p>
-            <p class="mt-2 text-gray-500 text-xs">
+          <router-link :to="`/projects/${proj.id}`" class="block space-y-2">
+            <h3 class="text-2xl font-semibold text-purple-800">{{ proj.name }}</h3>
+            <p class="text-gray-700 text-base">{{ proj.description }}</p>
+            <p class="mt-3 text-gray-600 text-sm">
               Director: {{ proj.director.username }}
               <span v-if="proj.manager"> | Manager: {{ proj.manager.username }}</span>
             </p>
@@ -44,8 +43,7 @@
         <ProjectForm @saved="onProjectSaved" @cancel="showForm = false" />
       </Modal>
     </div>
-  </div>
-</template>
+  </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'

@@ -180,7 +180,7 @@ export default {
   computed: {
     ...mapState('tasks', ['tasks', 'statuses']),
     tasksByStatus() {
-      return statusId => this.tasks.filter(task => task.status.id === statusId)
+      return statusId => this.tasks.filter(task => task.status.id === statusId && task.project.id === this.projectId)
     }
   },
   methods: {
@@ -199,6 +199,7 @@ export default {
     async onTaskReorder(evt) {
       const task = evt.item.__draggable_context.element
       const newStatusId = evt.to.__vueParentComponent.props.element.id
+      
       if (task.status.id !== newStatusId) {
         await this.updateTask({ taskId: task.id, payload: { status_id: newStatusId } })
         this.fetchTasks(this.projectId)

@@ -23,7 +23,7 @@ class UserAdmin(BaseUserAdmin):
     
     def full_name(self, obj):
         return f"{obj.first_name} {obj.last_name}"
-    full_name.short_description = 'Toʻliq ism'
+    full_name.short_description = 'Полное имя'
 
 
 # @admin.register(User)

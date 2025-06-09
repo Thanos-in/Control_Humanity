@@ -10,7 +10,7 @@ User = get_user_model()
 class StatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Status
-        fields = ('id', 'name', 'order', 'project')
+        fields = ('id', 'name', 'order', 'project', 'color')
 
 class TaskSerializer(serializers.ModelSerializer):
     assigned_to = UserSerializer(read_only=True)
@@ -38,7 +38,7 @@ class TaskSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'title', 'description', 'project', 'project_id',
             'assigned_to', 'assigned_to_id', 'status', 'status_id',
-            'created_by', 'created_at', 'updated_at', 'due_date'
+            'created_by', 'created_at', 'updated_at', 'due_date', 'color'
         )
         read_only_fields = ('created_by',)
 

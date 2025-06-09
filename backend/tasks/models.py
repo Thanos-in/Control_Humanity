@@ -1,13 +1,16 @@
 from django.db import models
 from django.conf import settings
 from projects.models import Project
+from django.utils import timezone
 
 class Status(models.Model):
     name = models.CharField(max_length=50)
     project = models.ForeignKey(
-        Project,
-        on_delete=models.CASCADE,
-        related_name='statuses'
+    Project,
+    on_delete=models.CASCADE,
+    null=True,
+    blank=True,
+    related_name='statuses'
     )
     order = models.PositiveIntegerField(default=0)
     color = models.CharField(max_length=7, default='#FFFFFF')
@@ -17,8 +20,12 @@ class Status(models.Model):
         ordering = ['order']
 
     def __str__(self):
-        return f"{self.project.name} – {self.name}"
 
+            if self.project:
+                return f"{self.project.name} – {self.name}"
+
+            return self.name
+    
 class Task(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
@@ -47,6 +54,7 @@ class Task(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    data_input = models.DateTimeField(default=timezone.now)
     due_date = models.DateTimeField(null=True, blank=True)
     color = models.CharField(max_length=7, default='#FFFFFF')
 

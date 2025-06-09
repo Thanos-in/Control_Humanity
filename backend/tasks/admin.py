@@ -4,25 +4,34 @@ from django.utils.translation import gettext_lazy as _
 from import_export.admin import ImportExportModelAdmin
 from django.utils.html import format_html
 
+from django.contrib import admin
+from django.utils.html import format_html
+from .models import Status
+
 class StatusAdmin(admin.ModelAdmin):
-    list_display = ('name', 'project', 'order', 'color_display')
-    list_filter = ('project',)
-    search_fields = ('name', 'project__name')
-    ordering = ('project', 'order')
-    list_per_page = 20
-   
+    list_display   = ('name', 'project', 'order', 'color_display')
+    list_filter    = ('project',)
+    search_fields  = ('name', 'project__name')
+    ordering       = ('project', 'order')
+    list_per_page  = 20
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        form.base_fields['project'].required = False
+        return form
+
     def color_display(self, obj):
         return format_html(
-            '<span style="display: inline-block; width: 20px; height: 20px; background-color: {}; border: 1px solid #ddd;"></span>',
-            obj.color  
+            '<span style="display: inline-block; width: 20px; height: 20px; '
+            'background-color: {}; border: 1px solid #ddd;"></span>',
+            obj.color
         )
-    
     color_display.short_description = 'Цвет'
 
 
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ('title', 'project', 'status', 'assigned_to', 'due_date', 'color_display')  # is_completed olib tashlandi
-    list_filter = ('project', 'status', 'assigned_to', 'created_by')  # priority va is_completed olib tashlandi
+    list_display = ('title', 'project', 'status', 'assigned_to', 'data_input', 'due_date', 'color_display')  
+    list_filter = ('project', 'status', 'assigned_to', 'created_by')
     search_fields = ('title', 'description', 'project__name')
     raw_id_fields = ('project', 'assigned_to', 'created_by')
     date_hierarchy = 'created_at'
@@ -32,7 +41,7 @@ class TaskAdmin(admin.ModelAdmin):
     readonly_fields = ('color_display',)
        
     def color_display(self, obj):
-        # Check if status exists and has color attribute
+
         if obj.status and hasattr(obj.status, 'color'):
             return format_html(
                 '<span style="display: inline-block; width: 20px; height: 20px; '
@@ -46,7 +55,7 @@ class TaskAdmin(admin.ModelAdmin):
         (None, {
             'fields': ('title', 'description', 'project', 'status',  'color_display')
         }),
-        ('Tayinlash', {
+        ('Назначение', {
             'fields': ('assigned_to', 'created_by', 'due_date')
         }),
     )

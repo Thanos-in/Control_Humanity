@@ -26,13 +26,14 @@ class TaskSerializer(serializers.ModelSerializer):
         source='status',
         write_only=True
     )
+
     project = ProjectSerializer(read_only=True)
     project_id = serializers.PrimaryKeyRelatedField(
         queryset=Project.objects.all(),
         source='project',
         write_only=True
     )
-
+    
     class Meta:
         model = Task
         fields = (

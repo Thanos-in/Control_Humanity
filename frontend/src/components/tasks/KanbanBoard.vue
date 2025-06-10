@@ -247,7 +247,7 @@ export default {
       await this.createTask({
         title: this.newTask.title,
         description: this.newTask.description,
-        projectId: this.projectId,
+        project_id: this.projectId,
         status_id: this.newTask.status_id,
         color: this.newTask.color || '#f0f0f0'
       })

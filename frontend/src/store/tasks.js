@@ -80,6 +80,7 @@ const actions = {
       )
       commit('appendTask', response.data)
     } catch (err) {
+      console.error('createTask error:', err.response?.data || err)
       commit('setError', err)
     }
   },

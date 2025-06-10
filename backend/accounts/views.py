@@ -19,3 +19,8 @@ class ManagerListView(generics.ListAPIView):
     queryset = User.objects.filter(role='manager')
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = UserSerializer
+    
+class UserListView(generics.ListAPIView):
+    queryset = User.objects.filter(role='employee')
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = UserSerializer

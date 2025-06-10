@@ -63,10 +63,10 @@
         class="fixed top-[68px] left-0 h-[calc(100vh-68px)] w-64 bg-white/90 backdrop-blur-md border-r border-transparent shadow-inner z-40"
       >
         <nav class="mt-6 px-4 space-y-4">
-          <router-link to="/projects" class="block text-gray-800 hover:text-indigo-600">Projects</router-link>
-          <router-link to="/tasks"    class="block text-gray-800 hover:text-indigo-600">Tasks</router-link>
-          <router-link to="/chat"     class="block text-gray-800 hover:text-indigo-600">Chat</router-link>
-          <router-link to="/ratings"  class="block text-gray-800 hover:text-indigo-600">Ratings</router-link>
+          <router-link to="/projects" class="block text-gray-800 hover:text-indigo-600 font-bold text-lg">Projects</router-link>
+          <router-link to="/tasks"    class="block text-gray-800 hover:text-indigo-600 font-bold text-lg">Tasks</router-link>
+          <router-link to="/chat"     class="block text-gray-800 hover:text-indigo-600 font-bold text-lg">Chat</router-link>
+          <router-link to="/ratings"  class="block text-gray-800 hover:text-indigo-600 font-bold text-lg">Ratings</router-link>
         </nav>
       </aside>
 

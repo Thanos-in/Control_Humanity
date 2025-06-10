@@ -36,7 +36,9 @@
               item-key="id"
               :animation="250"
             >
-              <template #item="{ element: task }">
+            <template #item="{ element: task }">
+              <div class="p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow duration-200"
+                  @click.stop="openTaskForm(task)">
                 <TaskCard
                   :task="task"
                   @update-task="handleInlineUpdate"
@@ -44,7 +46,11 @@
                   :style="{ backgroundColor: task.color || '#f0f0f0' }"
                   :text-color="getTextColor(task.color)"
                 />
-              </template>
+                <div class="mt-3 inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                  Срок: {{ formatDate(task.due_date) }}
+                </div>
+              </div>
+            </template>
             </draggable>
             <button
               @click="openNewTaskForm(status.id)"
@@ -128,7 +134,40 @@
               rows="3"
               placeholder="Task description"
               class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-base resize-none"
-            ></textarea>
+            >
+            </textarea>
+              <div class="mb-4">
+                <label class="block mb-1 font-medium" for="manager_id">Assign to</label>
+                <select
+                  v-model="newTask.user_id"
+                  id="user_id"
+                  class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                >
+                  <option disabled value="">Select a user</option>
+                  <option v-for="mgr in users" :key="mgr.id" :value="mgr.id">
+                    {{ mgr.username }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- Task Detail Modal -->
+              <router-view 
+                v-if="selectedTask" 
+                :task="selectedTask" 
+                @close="selectedTask = null" 
+              ></router-view>
+
+    <!-- Due date Form Modal -->
+          <div class="mb-4">
+            <label class="block mb-1 font-medium text-gray-700" for="due_date">Due Date</label>
+            <input
+              v-model="newTask.due_date"
+              id="due_date"
+              type="datetime-local"
+              class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-base"
+            />
+          </div>
+    <!-- Color Form Modal -->
           </div>
           <div class="flex items-center space-x-3">
             <label class="font-medium text-gray-700">Color:</label>
@@ -162,6 +201,7 @@
 import { mapState, mapActions } from 'vuex'
 import draggable from 'vuedraggable'
 import TaskCard from './TaskCard.vue'
+import axios from 'axios'
 
 export default {
   name: 'KanbanBoard',
@@ -170,9 +210,12 @@ export default {
   data() {
     return {
       showTaskForm: false,
-      newTask: { title: '', description: '', status_id: null, color: '#f0f0f0' },
+      selectedTask: null,
+      newTask: { title: '', description: '', status_id: null, color: '#f0f0f0', user_id: null, due_date: null },
+      users: [],
       addingStatus: false,
       newStatusName: '',
+      user_id: null,
       newStatusColor: '#ffffff',
       statusLoading: false
     }
@@ -189,6 +232,20 @@ export default {
       this.fetchStatuses(this.projectId)
       this.fetchTasks(this.projectId)
     },
+  async fetchUsers() {
+      try {
+        const response = await axios.get('/api/auth/users/users/')
+
+        this.users = response.data
+      } catch (err) {
+        console.error('Failed to fetch users:', err)
+      }
+    },
+
+   openTaskForm(task) {
+    this.$router.push({ path: `/taskform/${task.id}` })
+   },
+
     async onStatusReorder(evt) {
       const updates = this.statuses.map((s, idx) => ({ id: s.id, order: idx }))
       for (const u of updates) {
@@ -226,7 +283,7 @@ export default {
         name: this.newStatusName,
         color: this.newStatusColor,
         projectId: this.projectId,
-        order: this.statuses.length
+        order: this.statuses.length + 1
       })
       this.newStatusName = ''
       this.newStatusColor = '#ffffff'
@@ -243,13 +300,20 @@ export default {
       this.newTask = { title: '', description: '', status_id: statusId, color: '#f0f0f0' }
       this.showTaskForm = true
     },
+
+    formatDate(dateString) {
+      const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }
+      return new Date(dateString).toLocaleDateString(undefined, options)
+    },
     async handleCreateTask() {
       await this.createTask({
         title: this.newTask.title,
         description: this.newTask.description,
         project_id: this.projectId,
         status_id: this.newTask.status_id,
-        color: this.newTask.color || '#f0f0f0'
+        color: this.newTask.color || '#f0f0f0',
+        user_id: this.newTask.user_id,
+        due_date: this.newTask.due_date 
       })
       this.showTaskForm = false
       this.fetchTasks(this.projectId)
@@ -267,6 +331,7 @@ export default {
   },
   created() {
     this.loadData()
+    this.fetchUsers()
   }
 }
 </script>

@@ -1,17 +1,23 @@
 <template>
-  <div>
-    <h2 class="text-lg font-bold mb-4">Chat Rooms</h2>
-    <ul>
+    <h2 class="text-3xl font-bold text-white mb-8">Chat Rooms</h2>
+    <ul class="space-y-4">
       <li 
         v-for="room in rooms" 
         :key="room.id" 
-        class="p-2 border-b hover:bg-gray-100 cursor-pointer"
         @click="goToChat(room.id)"
+        class="bg-white bg-opacity-90 backdrop-blur-sm shadow-lg rounded-xl p-6 flex justify-between items-center cursor-pointer hover:scale-[1.02] transform transition"
       >
-        {{ room.id }} - {{ room.last_message?.content || 'No messages yet' }}
+        <div>
+          <h3 class="text-xl font-semibold text-gray-800">Room #{{ room.id }}</h3>
+          <p class="text-gray-600 truncate max-w-[80vw]">
+            {{ room.last_message?.content || 'No messages yet' }}
+          </p>
+        </div>
+        <span class="text-sm text-gray-500">
+          {{ formatTime(room.last_message?.timestamp) }}
+        </span>
       </li>
     </ul>
-  </div>
 </template>
 
 <script setup>
@@ -30,5 +36,11 @@ onMounted(() => {
 
 const goToChat = (roomId) => {
   router.push(`/chat/${roomId}`)
+}
+
+const formatTime = (timestamp) => {
+  if (!timestamp) return ''
+  const date = new Date(timestamp)
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 }
 </script>

@@ -10,17 +10,17 @@
       </button>
     </div>
 
-    <!-- Xatolik bo'lsa chiqarilsin -->
+    <!-- Error message -->
     <div v-if="projectError" class="mb-6 text-red-100 bg-red-500 p-4 rounded-lg text-lg">
       {{ projectError }}
     </div>
 
-    <!-- Loading paytida ko'rsatiladigan holat -->
+    <!-- Loading state -->
     <div v-if="isLoading" class="text-center py-12">
       <span class="text-white opacity-90 text-xl">Loading projects...</span>
     </div>
 
-    <!-- Project ro'yxati -->
+    <!-- Project list -->
     <ul v-else class="space-y-6">
       <li
         v-for="proj in projects"
@@ -32,27 +32,35 @@
             <h3 class="text-2xl font-semibold text-purple-800">{{ proj.name }}</h3>
             <p class="text-gray-700 text-base">{{ proj.description }}</p>
             <p class="mt-3 text-gray-600 text-sm">
-              Director: {{ proj.director.username }}
-              <span v-if="proj.manager"> | Manager: {{ proj.manager.username }}</span>
+              Director: {{ proj.director.username }}<span v-if="proj.manager"> | Manager: {{ proj.manager.username }}</span>
             </p>
           </router-link>
 
-          <!-- Delete button -->
-          <button
-            @click="confirmDelete(proj.id)"
-            :disabled="deletingId === proj.id"
-            class="text-red-600 hover:text-red-800 disabled:opacity-50"
-            title="Delete Project"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+          <!-- Delete button triggers inline confirmation -->
+          <div class="relative">
+            <button
+              @click="openDeleteInline(proj.id)"
+              :disabled="deletingId === proj.id"
+              class="text-red-600 hover:text-red-800 disabled:opacity-50"
+              title="Delete Project"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <div v-if="inlineDeleteId === proj.id" class="absolute top-full mt-2 right-0 bg-white rounded-lg shadow-lg p-4 w-64">
+              <p class="text-gray-800 mb-4">Rostdan ham bu loyihani o‘chirishni xohlaysizmi?</p>
+              <div class="flex justify-end space-x-2">
+                <button @click="cancelDelete" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">Bekor</button>
+                <button @click="confirmDelete" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">O‘chirish</button>
+              </div>
+            </div>
+          </div>
         </div>
       </li>
     </ul>
 
-    <!-- Modal: yangi loyiha qo'shish -->
+    <!-- Modal: New Project -->
     <Modal v-if="showForm" @close="showForm = false">
       <ProjectForm @saved="onProjectSaved" @cancel="showForm = false" />
     </Modal>
@@ -70,7 +78,9 @@ export default {
   data() {
     return {
       showForm: false,
-      deletingId: null // o'chirilayotgan project id
+      deletingId: null,
+      inlineDeleteId: null,
+      projectIdToDelete: null
     }
   },
   computed: {
@@ -82,19 +92,26 @@ export default {
   methods: {
     ...mapActions('projects', ['fetchProjects', 'deleteProject']),
     onProjectSaved() {
-      // Form ichida saqlangach, modalni yopamiz va ro'yxatni yangilaymiz
       this.showForm = false
       this.fetchProjects()
     },
-    async confirmDelete(projectId) {
-      if (!confirm('Are you sure you want to delete this project?')) return
-      this.deletingId = projectId
+    openDeleteInline(projectId) {
+      this.inlineDeleteId = projectId
+      this.projectIdToDelete = projectId
+    },
+    cancelDelete() {
+      this.inlineDeleteId = null
+      this.projectIdToDelete = null
+    },
+    async confirmDelete() {
+      this.deletingId = this.projectIdToDelete
       try {
-        await this.deleteProject(projectId)
+        await this.deleteProject(this.projectIdToDelete)
       } catch (error) {
         console.error('Failed to delete project:', error)
       } finally {
         this.deletingId = null
+        this.cancelDelete()
         this.fetchProjects()
       }
     }

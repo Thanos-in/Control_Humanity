@@ -23,7 +23,12 @@ const actions = {
     await axios.post('/api/chat/messages/', { chat_room: roomId, content })
     dispatch('fetchMessages', roomId)
   },
+  async deleteMessage({ commit }, { messageId }) {
+    await api.delete(`/chat/messages/${messageId}`)
+    commit('removeMessage', messageId)
+  }
 }
+
 
 const mutations = {
   setRooms(state, rooms) {
@@ -32,6 +37,9 @@ const mutations = {
   setMessages(state, messages) {
     state.messages = messages
   },
+  removeMessage(state, messageId) {
+    state.messages = state.messages.filter(msg => msg.id !== messageId)
+  }
 }
 
 export default {

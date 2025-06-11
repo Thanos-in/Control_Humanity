@@ -89,6 +89,7 @@ logs/
 *.ntvs*
 *.njsproj
 *.sln
+*.png
 
 # Windows
 Thumbs.db

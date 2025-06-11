@@ -29,6 +29,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 class UserSerializer(serializers.ModelSerializer):
+    profile_picture = serializers.ImageField(use_url=True)
+    
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'role')
+        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'role', 'profile_picture')

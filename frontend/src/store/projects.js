@@ -39,6 +39,10 @@ const actions = {
     } finally {
       commit('setLoading', false)
     }
+  },
+  async deleteProject({ commit }, projectId) {
+    await axios.delete(`/api/projects/${projectId}/`)
+    commit('removeProject', projectId)
   }
 }
 
@@ -51,6 +55,9 @@ const mutations = {
   },
   setError(state, error) {
     state.error = error
+  },
+  removeProject(state, projectId) {
+    state.projects = state.projects.filter(p => p.id !== projectId)
   }
 }
 

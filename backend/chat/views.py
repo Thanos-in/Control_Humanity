@@ -16,6 +16,9 @@ class ChatRoomViewSet(viewsets.ModelViewSet):
         room = serializer.save()
         return room
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
@@ -35,7 +38,7 @@ class MessageViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         message = self.get_object()
-        if message.sender != request.user:
+        if message.sender != request.user and not request.user.is_staff:
             from rest_framework.exceptions import PermissionDenied
-            raise PermissionDenied("!!!.")
+            raise PermissionDenied("Ruxsat yo‘q.")
         return super().destroy(request, *args, **kwargs)

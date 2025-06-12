@@ -14,6 +14,14 @@ class ProfileView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+    
+class AllProfileView(generics.RetrieveUpdateAPIView):
+    queryset = User.objects.all()
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = UserSerializer
+
+    lookup_field       = 'pk'         
+    lookup_url_kwarg   = 'userId'
 
 class ManagerListView(generics.ListAPIView):
     queryset = User.objects.filter(role='manager')
@@ -22,5 +30,10 @@ class ManagerListView(generics.ListAPIView):
     
 class UserListView(generics.ListAPIView):
     queryset = User.objects.filter(role='employee')
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = UserSerializer
+    
+class AllUserListView(generics.ListAPIView):
+    queryset = User.objects.all()
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = UserSerializer

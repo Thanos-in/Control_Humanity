@@ -1,5 +1,5 @@
 <template>
-    <div class="flex gap-6 overflow-x-auto pb-6">
+    <div class="flex gap-6 pb-6">
       <draggable
         :list="statuses"
         group="statuses"

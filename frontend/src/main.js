@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import './assets/tailwind.css'
 import axios from 'axios'
+// import axios from '../utils/axios'
 
 const token = localStorage.getItem('token')
 if (token) {

@@ -18,6 +18,7 @@
           <router-link to="/projects" class="px-3 py-1 text-white hover:text-yellow-200 transition">Projects</router-link>
           <router-link to="/tasks"    class="px-3 py-1 text-white hover:text-yellow-200 transition">Tasks</router-link>
           <router-link to="/chat"     class="px-3 py-1 text-white hover:text-yellow-200 transition">Chat</router-link>
+          <router-link to="/users"  class="px-3 py-1 text-white hover:text-yellow-200 transition">Users</router-link>
           <router-link to="/ratings"  class="px-3 py-1 text-white hover:text-yellow-200 transition">Ratings</router-link>
 
           <button @click="toggleDropdown" id="dropdownDefaultButton"
@@ -66,6 +67,7 @@
           <router-link to="/projects" class="block text-gray-800 hover:text-indigo-600 font-bold text-lg">Projects</router-link>
           <router-link to="/tasks"    class="block text-gray-800 hover:text-indigo-600 font-bold text-lg">Tasks</router-link>
           <router-link to="/chat"     class="block text-gray-800 hover:text-indigo-600 font-bold text-lg">Chat</router-link>
+          <router-link to="/users"  class="block text-gray-800 hover:text-indigo-600 font-bold text-lg">Users</router-link>
           <router-link to="/ratings"  class="block text-gray-800 hover:text-indigo-600 font-bold text-lg">Ratings</router-link>
         </nav>
       </aside>

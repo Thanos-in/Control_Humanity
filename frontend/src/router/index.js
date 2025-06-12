@@ -5,8 +5,7 @@ const routes = [
   { path: '/', component: () => import('../components/auth/Login.vue') },
   { path: '/register', component: () => import('../components/auth/Register.vue') },
   { 
-    path: '/profile/:userId?',
-    component: () => import('../components/auth/Profile.vue'),
+    path: '/profile/:userId?', component: () => import('../components/auth/Profile.vue'),
     meta: { requiresAuth: true }
   },
   { 
@@ -21,6 +20,7 @@ const routes = [
       { path: 'ratings', component: () => import('../components/ratings/RatingForm.vue') },
       { path: 'tasks', component: () => import('../components/tasks/KanbanBoard.vue') }, 
       { path: 'taskform/:taskId', component: () => import('../components/tasks/TaskForm.vue') }, 
+      { path: 'users', name: 'UserList', component: () => import('../components/auth/UsersList.vue')},
     ]
   }
 ]

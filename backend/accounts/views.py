@@ -1,4 +1,5 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
+from rest_framework.response import Response
 from .serializers import RegisterSerializer, UserSerializer
 from .models import User
 
@@ -15,13 +16,38 @@ class ProfileView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         return self.request.user
     
-class AllProfileView(generics.RetrieveUpdateAPIView):
+
+class AllProfileView(generics.RetrieveUpdateDestroyAPIView):
+
     queryset = User.objects.all()
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = UserSerializer
 
-    lookup_field       = 'pk'         
-    lookup_url_kwarg   = 'userId'
+    lookup_field     = 'pk'
+    lookup_url_kwarg = 'userId'
+
+    def delete(self, request, *args, **kwargs):
+
+        if request.user.role == 'employee':
+            return Response(
+                {"detail": "Вы не можете удалять!."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        user_to_delete = self.get_object()
+        if user_to_delete.is_superuser:
+            return Response(
+                {"detail": "Вы не можете удалять!."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        if user_to_delete == request.user:
+            return Response(
+                {"detail": "Вы не можете удалять!."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        return super().delete(request, *args, **kwargs)
+
 
 class ManagerListView(generics.ListAPIView):
     queryset = User.objects.filter(role='manager')

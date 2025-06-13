@@ -1,7 +1,20 @@
 <template>
-<div class="min-h-screen flex items-center justify-center p-6" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+  <div class="min-h-screen flex items-center justify-center p-6" style="background: linear-gradient(135deg, #667eea, #764ba2);">
     <div class="w-full max-w-2xl bg-white/10 backdrop-blur-md rounded-2xl shadow-xl p-8 border border-white/20">
-      <h1 class="text-3xl font-bold text-white text-center mb-8">User Profile</h1>
+      
+      <!-- Profile Photo -->
+      <div class="flex justify-center mb-6">
+        <img
+          :src="profile.profile_picture || defaultAvatar"
+          alt="Avatar"
+          class="w-24 h-24 rounded-full border-4 border-white object-cover 
+         transition-all duration-200 ease-in-out 
+         hover:w-28 hover:h-28 hover:shadow-lg"
+        />
+      </div>
+
+      <h1 v-if="profile.username !== ''" class="text-3xl font-bold text-white text-center mb-8">{{ profile.username }}'s profile</h1>      
+      <h1 v-if="profile.username == ''" class="text-3xl font-bold text-white text-center mb-8">User profile</h1>
 
       <form @submit.prevent class="space-y-6">
         <!-- Username -->
@@ -87,6 +100,11 @@
           >
             Save Role
           </button>
+          <button 
+          @click="closeModal" 
+          class="px-6 py-2 bg-red-300 text-gray-900 font-semibold rounded-lg hover:bg-red-400 transition duration-300">
+          Close
+          </button>
         </div>
       </form>
 
@@ -95,11 +113,12 @@
       <p v-if="success" class="mt-6 text-green-300 text-sm text-center">{{ success }}</p>
     </div>
   </div>
-  </template>
+</template>
 
 <script>
 import axios from 'axios'
 import { mapState } from 'vuex'
+import defaultAvatar from '../../assets/Default.png'
 
 export default {
   name: 'ProfileView',
@@ -107,7 +126,8 @@ export default {
     return {
       profile: {},
       error: '',
-      success: ''
+      success: '',
+      defaultAvatar
     }
   },
   computed: {
@@ -119,11 +139,9 @@ export default {
       return this.user.role === 'director'
     },
     canEditOwn() {
-      // user or manager editing own profile: canEditOwn true
       return this.isSelf
     },
     canEditRole() {
-      // director editing others
       return this.isDirector && !this.isSelf
     }
   },
@@ -163,6 +181,10 @@ export default {
       } catch (e) {
         this.error = 'Failed to update role.'
       }
+    },
+
+  closeModal() {
+    this.$router.back();  // 'this' orqali chaqirilsin
     }
   }
 }

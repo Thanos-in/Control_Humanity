@@ -3,7 +3,8 @@
     <!-- Header va New Chat Room tugmasi -->
     <div class="flex items-center justify-between mb-8">
       <h2 class="text-3xl font-bold text-white">Chat Rooms</h2>
-      <button @click="showCreateModal = true" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
+      <button @click="showCreateModal = true" 
+      class="bg-white text-purple-700 px-6 py-3 rounded-lg hover:bg-gray-100 shadow-md hover:shadow-lg transition font-semibold text-lg">
         + New Chat Room
       </button>
     </div>

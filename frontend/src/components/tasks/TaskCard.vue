@@ -8,14 +8,14 @@
 
 <script>
 export default {
-  name: 'TaskCard',
+  name: "TaskCard",
   props: {
     task: {
       type: Object,
-      required: true
-    }
-  }
-}
+      required: true,
+    },
+  },
+};
 </script>
 
 <style scoped>

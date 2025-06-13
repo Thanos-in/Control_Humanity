@@ -1,14 +1,21 @@
 <template>
+  <!-- ADD USER BUTTON -->
+  <div class="flex justify-end p-4">
+    <button
+      @click="goToRegister"
+      class="bg-white text-purple-700 px-6 py-3 rounded-lg hover:bg-gray-100 shadow-md hover:shadow-lg transition font-semibold text-lg"
+    >
+      + Add User
+    </button>
+  </div>
+
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
     <div v-if="loading" class="col-span-full text-center">Loading users...</div>
     <div v-if="error" class="col-span-full text-red-500 text-center">{{ error }}</div>
-
-    
-
     <div
       v-for="user in users"
       :key="user.id"
-      class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700"
+      class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 background: linear-gradient(135deg, #3b4cca, #5b2c82)"
     >
       <div class="flex justify-end px-4 pt-4 relative">
         <button
@@ -114,12 +121,16 @@ export default {
       router.push({ path: `/profile/${id}` });
     };
 
+    const goToRegister = () => {
+      router.push('/register');
+    };
+
     const editUser = (user) => console.log('Edit', user);
     const exportUser = (user) => console.log('Export', user);
     const deleteUser = async (id) => {
       if (!confirm('Are you sure you want to delete this user?')) return;
       try {
-        await axios.delete(`/api/auth/allusers/${id}/`);
+        await axios.delete(`/api/auth/profiles/${id}/`);
         users.value = users.value.filter((u) => u.id !== id);
       } catch {
         alert('Delete failed.');
@@ -139,13 +150,10 @@ export default {
       defaultAvatar,
       editUser,
       exportUser,
+      goToRegister,
       deleteUser,
       messageUser,
     };
   },
 };
 </script>
-
-<style scoped>
-/* Additional styling if needed */
-</style>

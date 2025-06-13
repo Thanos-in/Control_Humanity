@@ -13,13 +13,13 @@
         />
       </div>
 
-      <h1 v-if="profile.username !== ''" class="text-3xl font-bold text-white text-center mb-8">{{ profile.username }}'s profile</h1>      
+      <h1 v-if="profile.username !== ''" class="text-3xl font-bold text-white text-center mb-8">Профиль  {{ profile.username }}а</h1>      
       <h1 v-if="profile.username == ''" class="text-3xl font-bold text-white text-center mb-8">User profile</h1>
 
       <form @submit.prevent class="space-y-6">
         <!-- Username -->
         <div>
-          <label class="block text-sm font-medium text-white mb-1" for="username">Username</label>
+          <label class="block text-sm font-medium text-white mb-1" for="username">Имя пользователя</label>
           <input
             v-model="profile.username"
             id="username"
@@ -44,7 +44,7 @@
         <!-- First & Last Name -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label class="block text-sm font-medium text-white mb-1" for="first_name">First Name</label>
+            <label class="block text-sm font-medium text-white mb-1" for="first_name">Имя</label>
             <input
               v-model="profile.first_name"
               id="first_name"
@@ -54,7 +54,7 @@
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-white mb-1" for="last_name">Last Name</label>
+            <label class="block text-sm font-medium text-white mb-1" for="last_name">Фамилия</label>
             <input
               v-model="profile.last_name"
               id="last_name"
@@ -67,11 +67,11 @@
 
         <!-- Role -->
         <div>
-          <label class="block text-sm font-medium text-white mb-1" for="role">Role</label>
+          <label class="block text-sm font-medium text-white mb-1" for="role">Роль</label>
           <select
             v-model="profile.role"
             id="role"
-            class="w-full px-4 py-2 bg-white/10 text-white border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-300"
+            class="w-full px-4 py-2 bg-white/10 text-black border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-300"
             :disabled="!canEditRole"
           >
             <option value="employee">Employee</option>
@@ -89,7 +89,7 @@
             type="button"
             class="px-6 py-2 bg-yellow-300 text-gray-900 font-semibold rounded-lg hover:bg-yellow-400 transition duration-300"
           >
-            Save Profile
+            Сохранить
           </button>
 
           <button
@@ -98,12 +98,12 @@
             type="button"
             class="px-6 py-2 bg-green-300 text-gray-900 font-semibold rounded-lg hover:bg-green-400 transition duration-300"
           >
-            Save Role
+            Сохранить
           </button>
           <button 
           @click="closeModal" 
           class="px-6 py-2 bg-red-300 text-gray-900 font-semibold rounded-lg hover:bg-red-400 transition duration-300">
-          Close
+          Закрыть
           </button>
         </div>
       </form>

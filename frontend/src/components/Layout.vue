@@ -2,7 +2,7 @@
   <div class="h-screen flex flex-col bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500">
     <!-- Navbar -->
     <header class="fixed top-0 left-0 right-0 bg-gradient-to-r from-purple-700 to-indigo-600 bg-opacity-90 backdrop-blur-md border-b border-transparent z-50">
-      <div class="flex items-center justify-between px-6 py-4">
+      <div class="flex items-center justify-between px-6 py-4"> 
         <!-- Brand flush left -->
         <div class="flex items-center space-x-4">
           <button @click="toggleSidebar" class="p-2 rounded-md bg-gradient-to-br from-white/30 to-white/10 hover:from-white/50 hover:to-white/20 transition">
@@ -10,16 +10,16 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-          <h1 class="text-2xl font-semibold text-white">MyTaskManager</h1>
+          <h1 class="text-2xl font-semibold text-white">All Personal Soft</h1>
         </div>
 
         <!-- Nav flush right -->
         <nav class="space-x-4 relative">
-          <router-link to="/projects" class="px-3 py-1 text-white hover:text-yellow-200 transition">Projects</router-link>
-          <router-link to="/tasks"    class="px-3 py-1 text-white hover:text-yellow-200 transition">Tasks</router-link>
-          <router-link to="/chat"     class="px-3 py-1 text-white hover:text-yellow-200 transition">Chat</router-link>
-          <router-link to="/users"  class="px-3 py-1 text-white hover:text-yellow-200 transition">Users</router-link>
-          <router-link to="/ratings"  class="px-3 py-1 text-white hover:text-yellow-200 transition">Ratings</router-link>
+          <router-link to="/projects" class="px-3 py-1 text-white hover:text-yellow-200 transition">Проекты</router-link>
+          <router-link to="/tasks"    class="px-3 py-1 text-white hover:text-yellow-200 transition">Задачи</router-link>
+          <router-link to="/chat"     class="px-3 py-1 text-white hover:text-yellow-200 transition">Чаты</router-link>
+          <router-link to="/users"  class="px-3 py-1 text-white hover:text-yellow-200 transition">Пользователи</router-link>
+          <router-link to="/ratings"  class="px-3 py-1 text-white hover:text-yellow-200 transition">Рейтинг</router-link>
 
           <button @click="toggleDropdown" id="dropdownDefaultButton"
             class="text-white bg-gradient-to-br from-blue-500 to-teal-400 hover:from-blue-600 hover:to-teal-500 focus:ring-4 focus:outline-none focus:ring-white font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center"
@@ -64,11 +64,11 @@
         class="fixed top-[68px] left-0 h-[calc(100vh-68px)] w-64 bg-white/90 backdrop-blur-md border-r border-transparent shadow-inner z-40"
       >
         <nav class="mt-6 px-4 space-y-4">
-          <router-link to="/projects" class="block text-gray-800 hover:text-indigo-600 font-bold text-lg">Projects</router-link>
-          <router-link to="/tasks"    class="block text-gray-800 hover:text-indigo-600 font-bold text-lg">Tasks</router-link>
-          <router-link to="/chat"     class="block text-gray-800 hover:text-indigo-600 font-bold text-lg">Chat</router-link>
-          <router-link to="/users"  class="block text-gray-800 hover:text-indigo-600 font-bold text-lg">Users</router-link>
-          <router-link to="/ratings"  class="block text-gray-800 hover:text-indigo-600 font-bold text-lg">Ratings</router-link>
+          <router-link to="/projects" class="block text-gray-800 hover:text-indigo-600 font-bold text-lg">Проекты</router-link>
+          <router-link to="/tasks"    class="block text-gray-800 hover:text-indigo-600 font-bold text-lg">Задачи</router-link>
+          <router-link to="/chat"     class="block text-gray-800 hover:text-indigo-600 font-bold text-lg">Чаты</router-link>
+          <router-link to="/users"  class="block text-gray-800 hover:text-indigo-600 font-bold text-lg">Пользователи</router-link>
+          <router-link to="/ratings"  class="block text-gray-800 hover:text-indigo-600 font-bold text-lg">Рейтинг</router-link>
         </nav>
       </aside>
 
@@ -90,7 +90,7 @@ export default {
     return {
       showSidebar: true,
       isDropdownOpen: false,
-      currentLanguage: 'Eng'
+      currentLanguage: 'Ru'
     }
   },
   methods: {

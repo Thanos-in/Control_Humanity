@@ -61,7 +61,7 @@
             @click="openNewTaskForm(status.id)"
             class="mt-5 py-2 px-4 rounded-md bg-gradient-to-r from-green-400 to-blue-500 text-white font-medium hover:from-green-500 hover:to-blue-600 transition duration-300"
           >
-            + New Task
+            + Новая задача
           </button>
         </section>
       </template>
@@ -74,18 +74,18 @@
           @click="startAddStatus"
           class="w-full h-48 p-4 border-2 border-dashed border-gray-300 rounded-md text-gray-600 font-medium hover:border-gray-400 hover:bg-white transition"
         >
-          + Add Status
+          + Добавить статус
         </button>
       </div>
       <div v-else class="bg-white p-5 rounded-md shadow-md">
         <input
           v-model="newStatusName"
           type="text"
-          placeholder="Enter status title"
+          placeholder="Введите название статуса"
           class="w-full p-3 border-b border-gray-300 focus:outline-none focus:border-blue-500 mb-4 text-base font-medium"
         />
         <div class="flex items-center space-x-3 mb-3">
-          <label class="font-medium text-gray-700">Color:</label>
+          <label class="font-medium text-gray-700">Цвет:</label>
           <input
             type="color"
             v-model="newStatusColor"
@@ -97,15 +97,15 @@
             @click="cancelAddStatus"
             class="px-3 py-2 text-gray-600 font-medium hover:text-gray-800"
           >
-            Cancel
+            Отменить
           </button>
           <button
             @click="confirmAddStatus"
-            class="px-4 py-2 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 transition disabled:opacity-50"
+            class="px-4 py-2 bg-green-600 text-white font-medium rounded-md hover:bg-green-800 transition disabled:opacity-50"
             :disabled="statusLoading || !newStatusName.trim()"
           >
-            <span v-if="statusLoading">Adding...</span>
-            <span v-else>Add</span>
+            <span v-if="statusLoading">Добавление...</span>
+            <span v-else>Добавить</span>
           </button>
         </div>
       </div>

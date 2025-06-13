@@ -5,12 +5,12 @@
       @click="goToRegister"
       class="bg-white text-purple-700 px-6 py-3 rounded-lg hover:bg-gray-100 shadow-md hover:shadow-lg transition font-semibold text-lg"
     >
-      + Add User
+      + Добавить пользователя
     </button>
   </div>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
-    <div v-if="loading" class="col-span-full text-center">Loading users...</div>
+    <div v-if="loading" class="col-span-full text-center">Загрузка пользователей...</div>
     <div v-if="error" class="col-span-full text-red-500 text-center">{{ error }}</div>
     <div
       v-for="user in users"
@@ -34,18 +34,8 @@
         >
           <ul class="py-2">
             <li>
-              <button @click="editUser(user)" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
-                Edit
-              </button>
-            </li>
-            <li>
-              <button @click="exportUser(user)" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
-                Export Data
-              </button>
-            </li>
-            <li>
               <button @click="deleteUser(user.id)" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
-                Delete
+                Удалить
               </button>
             </li>
           </ul>
@@ -70,13 +60,13 @@
             @click="viewProfile(user.id)"
             class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-green-600 rounded-lg hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800"
           >
-            View Profile
+            Просматривать
           </button>
           <button
             @click="messageUser(user.id)"
             class="py-2 px-4 ms-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
           >
-            Message
+            Сообщение
           </button>
         </div>
       </div>

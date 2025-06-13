@@ -2,7 +2,11 @@
 <template>
   <div class="bg-white p-4 rounded shadow">
     <h4 class="font-medium">{{ task.title }}</h4>
-    <p class="text-sm text-gray-600">{{ task.description }}</p>
+    <p class="text-sm text-gray-600">
+    {{(task.description.length > 50)
+      ? task.description.slice(0, 50) + '…'
+      : task.description
+  }}</p>
   </div>
 </template>
 

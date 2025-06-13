@@ -2,19 +2,19 @@
   <div>
     <!-- Header va New Chat Room tugmasi -->
     <div class="flex items-center justify-between mb-8">
-      <h2 class="text-3xl font-bold text-white">Chat Rooms</h2>
+      <h2 class="text-3xl font-bold text-white">Комнаты для чатов</h2>
       <button @click="showCreateModal = true" 
       class="bg-white text-purple-700 px-6 py-3 rounded-lg hover:bg-gray-100 shadow-md hover:shadow-lg transition font-semibold text-lg">
-        + New Chat Room
+        + Новая комната чата
       </button>
     </div>
 
     <!-- Create Chat Room Modal -->
     <div v-if="showCreateModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div class="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
-        <h3 class="text-xl font-semibold mb-4">Create Chat Room</h3>
+        <h3 class="text-xl font-semibold mb-4">Создать комнату чата</h3>
         
-        <label class="block mb-2 text-gray-700">Select Participants:</label>
+        <label class="block mb-2 text-gray-700">Выберите участников:</label>
         <ul class="max-h-60 overflow-y-auto space-y-2">
           <li 
             v-for="user in users" 
@@ -32,8 +32,8 @@
         </ul>
 
         <div class="flex justify-end space-x-2 mt-4">
-          <button @click="closeCreateModal" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancel</button>
-          <button @click="createRoom" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Create</button>
+          <button @click="closeCreateModal" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Отменить</button>
+          <button @click="createRoom" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Создать</button>
         </div>
       </div>
     </div>
@@ -49,7 +49,7 @@
         <div>
           <h3 class="text-xl font-semibold text-gray-800">Room #{{ room.id }}</h3>
           <p class="text-gray-600 truncate max-w-[80vw]">
-            {{ room.last_message?.content || 'No messages yet' }}
+            {{ room.last_message?.content || 'Сообщений пока нет' }}
           </p>
         </div>
         <div class="flex items-center space-x-4">

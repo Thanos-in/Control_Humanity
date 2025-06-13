@@ -1,12 +1,12 @@
 <template>
   <div class="max-w-4xl mx-auto">
     <div class="flex items-center justify-between mb-10">
-      <h2 class="text-4xl font-bold text-white">Projects</h2>
+      <h2 class="text-4xl font-bold text-white">Проекты</h2>
       <button
         @click="showForm = true"
         class="bg-white text-purple-700 px-6 py-3 rounded-lg hover:bg-gray-100 shadow-md hover:shadow-lg transition font-semibold text-lg"
       >
-        + New Project
+        + Новый проект
       </button>
     </div>
 
@@ -17,7 +17,7 @@
 
     <!-- Loading state -->
     <div v-if="isLoading" class="text-center py-12">
-      <span class="text-white opacity-90 text-xl">Loading projects...</span>
+      <span class="text-white opacity-90 text-xl">Загрузка проектов...</span>
     </div>
 
     <!-- Project list -->
@@ -32,7 +32,7 @@
             <h3 class="text-2xl font-semibold text-purple-800">{{ proj.name }}</h3>
             <p class="text-gray-700 text-base">{{ proj.description }}</p>
             <p class="mt-3 text-gray-600 text-sm">
-              Director: {{ proj.director.username }}<span v-if="proj.manager"> | Manager: {{ proj.manager.username }}</span>
+              Директор: {{ proj.director.username }}<span v-if="proj.manager"> | Менежер: {{ proj.manager.username }}</span>
             </p>
           </router-link>
 
@@ -49,10 +49,10 @@
               </svg>
             </button>
             <div v-if="inlineDeleteId === proj.id" class="absolute top-full mt-2 right-0 bg-white rounded-lg shadow-lg p-4 w-64">
-              <p class="text-gray-800 mb-4">Rostdan ham bu loyihani o‘chirishni xohlaysizmi?</p>
+              <p class="text-gray-800 mb-4">Вы действительно хотите удалить этот проект?</p>
               <div class="flex justify-end space-x-2">
-                <button @click="cancelDelete" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">Bekor</button>
-                <button @click="confirmDelete" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">O‘chirish</button>
+                <button @click="cancelDelete" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">Отменить</button>
+                <button @click="confirmDelete" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">Удалить</button>
               </div>
             </div>
           </div>

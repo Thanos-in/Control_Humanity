@@ -33,14 +33,14 @@
                 ...
               </button>
 
-              <!-- Dropdown menyu tashqariga chiqadi -->
+              <!-- Dropdown status -->
               <div
                 v-if="activeDropdownId === status.id"
                 class="absolute left-full top-0 ml-2 w-36 bg-white rounded-md shadow-lg z-50"
               >
                 <button
                   @click="removeStatus(status.id)"
-                  class="w-full flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 hover:text-red-800 transition-all rounded-md"
+                  class="w-full flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-200 bg-neutral-900/90 hover:bg-neutral-800 hover:text-white transition-all rounded-md border border-neutral-700"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -135,7 +135,7 @@
         </button>
       </div>
 
-      <div v-else class="bg-black/90 p-4 rounded-xl w-80 space-y-3">
+      <div v-else class="bg-neutral-900/90 border border-neutral-700 p-4 rounded-xl w-80 space-y-3 text-gray-200">
         <div class="flex items-center space-x-2">
           <input
             v-model="newStatusName"
@@ -175,18 +175,20 @@
   </div>
 
   <!-- New Task Form Modal -->
-  <div
+<div
     v-if="showTaskForm"
-    class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50"
+    class="fixed inset-0 flex items-center justify-center z-50
+           bg-neutral-900/90 backdrop-blur-md border border-neutral-700 text-gray-200"
   >
     <div
-      class="w-full max-w-lg p-8 rounded-xl shadow-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white"
+      class="w-full max-w-lg p-8 rounded-xl shadow-2xl
+             bg-neutral-900/90 backdrop-blur-md border border-neutral-700 text-gray-200"
     >
       <h3 class="text-2xl font-bold mb-6">Создать новую задачу</h3>
       <form @submit.prevent="handleCreateTask" class="space-y-5">
         <!-- Task Title -->
         <div>
-          <label class="block mb-1 font-medium text-white" for="title">
+          <label class="block mb-1 font-medium text-gray-200" for="title">
             Название задачи
           </label>
           <input
@@ -194,14 +196,14 @@
             id="title"
             type="text"
             placeholder="Введите название"
-            class="w-full p-3 bg-white/10 border border-white/30 placeholder-white/60 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 text-base"
+            class="w-full p-3 bg-white/10 border border-white/30 placeholder-white/60 text-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 text-base"
             required
           />
         </div>
 
         <!-- Description -->
         <div>
-          <label class="block mb-1 font-medium text-white" for="description">
+          <label class="block mb-1 font-medium text-gray-200" for="description">
             Описание
           </label>
           <textarea
@@ -209,19 +211,19 @@
             id="description"
             rows="3"
             placeholder="Опишите задачу"
-            class="w-full p-3 bg-white/10 border border-white/30 placeholder-white/60 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 text-base resize-none"
+            class="w-full p-3 bg-white/10 border border-white/30 placeholder-white/60 text-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 text-base resize-none"
           ></textarea>
         </div>
 
         <!-- Assign To -->
         <div>
-          <label class="block mb-1 font-medium text-white" for="assigned_to_id">
+          <label class="block mb-1 font-medium text-gray-200" for="assigned_to_id">
             Назначить
           </label>
           <select
             v-model="newTask.assigned_to_id"
             id="assigned_to_id"
-            class="w-full p-3 bg-white/10 border border-white/30 text-black rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
+            class="w-full p-3 bg-white/10 border border-white/30 placeholder-white/60 text-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
           >
             <option disabled value="">Выберите пользователя</option>
             <option v-for="mgr in users" :key="mgr.id" :value="mgr.id">
@@ -232,20 +234,20 @@
 
         <!-- Due Date -->
         <div>
-          <label class="block mb-1 font-medium text-white" for="due_date">
+          <label class="block mb-1 font-medium text-gray-200" for="due_date">
             Срок окончания
           </label>
           <input
             v-model="newTask.due_date"
             id="due_date"
             type="datetime-local"
-            class="w-full p-3 bg-white/10 border border-white/30 placeholder-white/60 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 text-base"
+            class="w-full p-3 bg-white/10 border border-white/30 placeholder-white/60 text-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 text-base"
           />
         </div>
 
         <!-- Color Picker -->
         <div class="flex items-center space-x-3">
-          <label class="font-medium"> Цвет задачи: </label>
+          <label class="font-medium text-gray-200"> Цвет задачи: </label>
           <input
             type="color"
             v-model="newTask.color"
@@ -258,13 +260,13 @@
           <button
             type="button"
             @click="showTaskForm = false"
-            class="px-5 py-2 font-medium text-white/80 hover:text-white"
+            class="px-5 py-2 font-medium text-gray-200/80 hover:text-gray-200"
           >
             Отменить
           </button>
           <button
             type="submit"
-            class="px-6 py-2 bg-white/20 text-white font-semibold rounded-md hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
+            class="px-6 py-2 bg-gray-700/50 text-gray-200 font-semibold rounded-md hover:bg-gray-700/70 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-opacity-50"
           >
             Создать
           </button>

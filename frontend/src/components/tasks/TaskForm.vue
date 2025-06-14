@@ -1,7 +1,7 @@
 <template>
   <div
     class="fixed inset-0 bg-gradient-to-br from-blue-100 to-purple-200 flex items-center justify-center p-6 mt-20">
-    <div:class="['bg-white p-10 rounded-3xl shadow-2xl w-full max-w-3xl overflow-y-auto max-h-full transition-all',
+    <div :class="['bg-white p-10 rounded-3xl shadow-2xl w-full max-w-3xl overflow-y-auto max-h-full transition-all',
         editing ? 'border-4 border-green-400' : 'border-none',
       ]">
       <div class="flex items-center justify-between mb-8">

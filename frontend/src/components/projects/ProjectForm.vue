@@ -1,58 +1,58 @@
 <template>
-  <div>
-    <h3 class="text-xl font-semibold mb-4">New Project</h3>
-    <form @submit.prevent="handleSubmit" class="bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl">
+  <div class="">
+    <h3 class="text-xl font-semibold mb-4 text-gray-200">Новый проект</h3>
+    <form @submit.prevent="handleSubmit" class="bg-neutral-900/90 backdrop-blur-md border border-neutral-700 text-gray-200 p-6 rounded-lg shadow-lg w-full max-w-3xl">
       <div class="mb-4">
-        <label class="block mb-1 font-medium" for="name">Project Name</label>
+        <label class="block mb-1 font-medium" for="name">Название проекта</label>
         <input
           v-model="form.name"
           id="name"
           type="text"
-          placeholder="Enter project name"
-          class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+          placeholder="Введите название проекта"
+          class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-neutral-800 text-gray-200"
         />
       </div>
       <div class="mb-4">
-        <label class="block mb-1 font-medium" for="description">Description</label>
+        <label class="block mb-1 font-medium" for="description">Описание</label>
         <textarea
           v-model="form.description"
           id="description"
           rows="3"
-          placeholder="Enter project description"
-          class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+          placeholder="Введите описание проекта"
+          class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-neutral-800 text-gray-200"
         ></textarea>
       </div>
       <div class="mb-4">
-        <label class="block mb-1 font-medium" for="manager_id">Assign Manager</label>
+        <label class="block mb-1 font-medium" for="manager_id">Назначить менеджера</label>
         <select
           v-model="form.manager_id"
           id="manager_id"
-          class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+          class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-neutral-800 text-gray-200"
         >
-          <option disabled value="">Select a manager</option>
+          <option disabled value="">Выберите менеджера</option>
           <option v-for="mgr in managers" :key="mgr.id" :value="mgr.id">
             {{ mgr.username }}
           </option>
         </select>
       </div>
-      <div v-if="errorMessage" class="mb-4 text-red-600 text-sm">
+      <div v-if="errorMessage" class="mb-4 text-red-400 text-sm">
         {{ errorMessage }}
       </div>
       <div class="flex justify-end space-x-2">
         <button
           type="button"
           @click="$emit('cancel')"
-          class="px-4 py-2 border rounded hover:bg-gray-100 transition"
+          class="px-4 py-2 border rounded hover:bg-gray-700 transition"
         >
-          Cancel
+          Отменить
         </button>
         <button
           type="submit"
           class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
           :disabled="loading"
         >
-          <span v-if="loading">Saving...</span>
-          <span v-else>Save</span>
+          <span v-if="loading">Добавление...</span>
+          <span v-else>Добавить</span>
         </button>
       </div>
     </form>

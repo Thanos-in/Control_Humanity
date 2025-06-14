@@ -1,64 +1,55 @@
 <template>
-  <div class="max-w-4xl mx-auto">
-    <div class="flex items-center justify-between mb-10">
-      <h2 class="text-4xl font-bold text-white">Проекты</h2>
-      <button
-        @click="showForm = true"
-        class="bg-white text-purple-700 px-6 py-3 rounded-lg hover:bg-gray-100 shadow-md hover:shadow-lg transition font-semibold text-lg"
-      >
+  <div class="flex-1 p-4 flex flex-col overflow-auto">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-3xl font-bold text-white">Проекты</h2>
+      <button @click="showForm = true" class="bg-white text-purple-700 px-4 py-2 rounded-lg hover:bg-gray-100 shadow transition font-semibold text-sm">
         + Новый проект
       </button>
     </div>
 
-    <!-- Error message -->
-    <div v-if="projectError" class="mb-6 text-red-100 bg-red-500 p-4 rounded-lg text-lg">
+    <!-- Error -->
+    <div v-if="projectError" class="mb-4 text-red-100 bg-red-500 p-3 rounded text-sm">
       {{ projectError }}
     </div>
 
-    <!-- Loading state -->
-    <div v-if="isLoading" class="text-center py-12">
-      <span class="text-white opacity-90 text-xl">Загрузка проектов...</span>
+    <!-- Loading -->
+    <div v-if="isLoading" class="flex-1 flex items-center justify-center">
+      <span class="text-white opacity-90 text-lg">Загрузка проектов...</span>
     </div>
 
-    <!-- Project list -->
-    <ul v-else class="space-y-6">
-      <li
-        v-for="proj in projects"
-        :key="proj.id"
-        class="bg-white bg-opacity-90 p-6 rounded-2xl shadow-xl hover:shadow-2xl transition transform hover:scale-[1.01] min-h-[160px] flex flex-col justify-between"
-      >
+    <!-- List -->
+    <ul v-else class="flex-1 overflow-auto space-y-4">
+      <li v-for="proj in projects" :key="proj.id" class="bg-white/90 p-4 rounded-xl shadow hover:shadow-lg transition transform hover:scale-101 flex flex-col justify-between min-h-[160px]">
         <div class="flex justify-between items-start">
-          <router-link :to="`/projects/${proj.id}`" class="block space-y-2 flex-1 mr-4">
-            <h3 class="text-2xl font-semibold text-purple-800">{{ proj.name }}</h3>
-            <p class="text-gray-700 text-base">{{ proj.description }}</p>
-            <p class="mt-3 text-gray-600 text-sm">
-              Директор: {{ proj.director.username }}<span v-if="proj.manager"> | Менежер: {{ proj.manager.username }}</span>
-            </p>
+          <router-link :to="`/projects/${proj.id}`" class="flex-1 pr-3 space-y-1">
+            <h3 class="text-xl font-semibold text-purple-800">{{ proj.name }}</h3>
+            <p class="text-gray-700 text-sm">{{ proj.description }}</p>
           </router-link>
-
-          <!-- Delete button triggers inline confirmation -->
-          <div class="relative">
-            <button
-              @click="openDeleteInline(proj.id)"
-              :disabled="deletingId === proj.id"
-              class="text-red-600 hover:text-red-800 disabled:opacity-50"
-              title="Delete Project"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-            <div v-if="inlineDeleteId === proj.id" class="absolute top-full mt-2 right-0 bg-white rounded-lg shadow-lg p-4 w-64">
-              <p class="text-gray-800 mb-4">Вы действительно хотите удалить этот проект?</p>
-              <div class="flex justify-end space-x-2">
-                <button @click="cancelDelete" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">Отменить</button>
-                <button @click="confirmDelete" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">Удалить</button>
-              </div>
-            </div>
-          </div>
+          <!-- Delete Button -->
+          <button @click="openDeleteInline(proj.id)" :disabled="deletingId === proj.id" class="text-red-600 hover:text-red-800 disabled:opacity-50">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+        <!-- Director / Manager -->
+        <div class="mt-2 text-gray-600 text-xs">
+          Директор: {{ proj.director.username }}<span v-if="proj.manager"> | Менеджер: {{ proj.manager.username }}</span>
         </div>
       </li>
     </ul>
+
+    <!-- Central Confirm Modal -->
+    <div v-if="inlineDeleteId" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div class="bg-white rounded-lg shadow p-6 w-80">
+        <p class="text-gray-800 text-sm mb-4">Вы действительно хотите удалить проект?</p>
+        <div class="flex justify-end space-x-2">
+          <button @click="cancelDelete" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs">Отменить</button>
+          <button @click="confirmDelete" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-xs">Удалить</button>
+        </div>
+      </div>
+    </div>
 
     <!-- Modal: New Project -->
     <Modal v-if="showForm" @close="showForm = false">
@@ -68,7 +59,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapState } from 'vuex'                            // ←– CHANGED: added mapState
 import Modal from '../ui/Modal.vue'
 import ProjectForm from './ProjectForm.vue'
 
@@ -85,39 +76,29 @@ export default {
   },
   computed: {
     ...mapGetters('projects', ['allProjects', 'isLoading', 'projectError']),
-    projects() {
-      return this.allProjects
+    ...mapState('auth', ['user']),                                                  // ←– CHANGED: pull in current user
+    projects() {                                                                     // ←– CHANGED: filter by manager
+      // direktor ham ko‘rsin, ammo manager faqat o‘ziga tegishlilarni
+      if (this.user.role === 'director') {
+        return this.allProjects
+      }
+      return this.allProjects.filter(proj => 
+        proj.manager && proj.manager.id === this.user.id
+      )
     }
   },
   methods: {
     ...mapActions('projects', ['fetchProjects', 'deleteProject']),
-    onProjectSaved() {
-      this.showForm = false
-      this.fetchProjects()
-    },
-    openDeleteInline(projectId) {
-      this.inlineDeleteId = projectId
-      this.projectIdToDelete = projectId
-    },
-    cancelDelete() {
-      this.inlineDeleteId = null
-      this.projectIdToDelete = null
-    },
+    onProjectSaved() { this.showForm = false; this.fetchProjects() },
+    openDeleteInline(id) { this.inlineDeleteId = id; this.projectIdToDelete = id },
+    cancelDelete() { this.inlineDeleteId = null; this.projectIdToDelete = null },
     async confirmDelete() {
       this.deletingId = this.projectIdToDelete
-      try {
-        await this.deleteProject(this.projectIdToDelete)
-      } catch (error) {
-        console.error('Failed to delete project:', error)
-      } finally {
-        this.deletingId = null
-        this.cancelDelete()
-        this.fetchProjects()
-      }
+      try { await this.deleteProject(this.projectIdToDelete) }
+      catch (e) { console.error(e) }
+      finally { this.deletingId = null; this.cancelDelete(); this.fetchProjects() }
     }
   },
-  created() {
-    this.fetchProjects()
-  }
+  created() { this.fetchProjects() }
 }
 </script>

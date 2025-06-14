@@ -10,74 +10,129 @@
     >
       <template #item="{ element: status }">
         <section
-          class="w-80 rounded-md p-5 shadow-md flex flex-col"
+          class="w-80 rounded-xl p-4 shadow-md flex flex-col"
           :style="{ backgroundColor: status.color || '#ffffff' }"
           :data-status-id="status.id"
         >
-          <header class="flex justify-between items-center mb-4">
+          <!-- Header -->
+          <header class="flex justify-between items-center mb-3">
             <h2
-              class="text-xl font-semibold truncate"
+              class="text-base font-semibold truncate"
               :style="{ color: getTextColor(status.color) }"
             >
               {{ status.name }}
             </h2>
-            <button
-              @click="removeStatus(status.id)"
-              class="text-red-400 hover:text-red-600 text-2xl"
-              title="Remove Status"
-            >
-              &times;
-            </button>
+
+            <!-- "..." menyusi -->
+            <div class="relative">
+              <button
+                @click="toggleDropdown(status.id)"
+                class="text-gray-600 hover:text-gray-800 text-xl"
+                title="Опции"
+              >
+                ...
+              </button>
+
+              <!-- Dropdown menyu tashqariga chiqadi -->
+              <div
+                v-if="activeDropdownId === status.id"
+                class="absolute left-full top-0 ml-2 w-36 bg-white rounded-md shadow-lg z-50"
+              >
+                <button
+                  @click="removeStatus(status.id)"
+                  class="w-full flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 hover:text-red-800 transition-all rounded-md"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                  Удалить
+                </button>
+              </div>
+            </div>
           </header>
+
+          <!-- Tasklar -->
           <draggable
             :list="tasksByStatus(status.id)"
             group="tasks"
             @end="(evt) => onTaskReorder(evt, status.id)"
-            class="flex-1 space-y-4 overflow-y-auto"
+            class="flex-1 space-y-3 overflow-y-auto"
             item-key="id"
             :animation="250"
           >
             <template #item="{ element: task }">
               <div
-                class="p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow duration-200"
+                class="p-3 rounded-lg shadow-sm hover:shadow-md transition cursor-pointer"
+                :style="{ backgroundColor: task.color || '#f0f0f0' }"
                 @click.stop="openTaskForm(task)"
               >
                 <TaskCard
                   :task="task"
                   @update-task="handleInlineUpdate"
-                  class="cursor-move hover:scale-105 transition-transform duration-200"
-                  :style="{ backgroundColor: task.color || '#f0f0f0' }"
+                  class="cursor-move"
                   :text-color="getTextColor(task.color)"
                 />
+
                 <div
-                  class="mt-3 inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium"
+                  v-if="task.due_date"
+                  class="mt-2 text-xs text-gray-200 bg-black bg-opacity-20 rounded-md px-2 py-1 inline-block"
                 >
                   Срок: {{ formatDate(task.due_date) }}
                 </div>
               </div>
             </template>
           </draggable>
+
+          <!-- + Добавить карточку -->
           <button
             @click="openNewTaskForm(status.id)"
-            class="mt-5 py-2 px-4 rounded-md bg-gradient-to-r from-green-400 to-blue-500 text-white font-medium hover:from-green-500 hover:to-blue-600 transition duration-300"
+            class="mt-3 w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg bg-transparent hover:shadow-sm hover:scale-[1.01] hover:backdrop-brightness-105 transition-all duration-200 ease-in-out cursor-pointer"
           >
-            + Новая задача
+            <span class="text-white font-normal">Добавить карточку</span>
+            <svg
+              class="w-5 h-5 text-white opacity-70"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
           </button>
         </section>
       </template>
     </draggable>
 
     <!-- Add Status Column -->
-    <section class="w-64 flex-shrink-0">
-      <div v-if="!addingStatus" class="h-full flex items-center justify-center">
+    <section class="w-90 flex-shrink-0">
+      <div
+        v-if="!addingStatus"
+        class="flex items-start justify-center mt-[10px]"
+      >
         <button
           @click="startAddStatus"
-          class="w-full h-48 p-4 border-2 border-dashed border-gray-300 rounded-md text-gray-600 font-medium hover:border-gray-400 hover:bg-white transition"
+          class="w-[280px] flex items-center justify-center px-4 py-2 bg-purple-700 bg-opacity-80 hover:bg-opacity-100 rounded-lg text-white text-sm font-medium cursor-pointer transition"
         >
           + Добавить статус
         </button>
       </div>
-      <div v-else class="bg-white p-5 rounded-md shadow-md">
+
+      <div v-else class="w-[280px] bg-white p-5 rounded-md shadow-md mt-0">
         <input
           v-model="newStatusName"
           type="text"
@@ -117,82 +172,114 @@
     v-if="showTaskForm"
     class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50"
   >
-    <div class="bg-white w-full max-w-lg p-8 rounded-md shadow-xl">
-      <h3 class="text-2xl font-bold mb-6 text-gray-900">Create New Task</h3>
+    <div class="w-full max-w-lg p-8 rounded-xl shadow-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white">
+      <h3 class="text-2xl font-bold mb-6">
+        Создать новую задачу
+      </h3>
       <form @submit.prevent="handleCreateTask" class="space-y-5">
+        <!-- Task Title -->
         <div>
-          <label class="block mb-1 font-medium text-gray-700" for="title"
-            >Title</label
+          <label
+            class="block mb-1 font-medium text-white"
+            for="title"
           >
+            Название задачи
+          </label>
           <input
             v-model="newTask.title"
             id="title"
             type="text"
-            placeholder="Task title"
-            class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-base"
+            placeholder="Введите название"
+            class="w-full p-3 bg-white/10 border border-white/30 placeholder-white/60 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 text-base"
             required
           />
         </div>
+
+        <!-- Description -->
         <div>
-          <label class="block mb-1 font-medium text-gray-700" for="description"
-            >Description</label
+          <label
+            class="block mb-1 font-medium text-white"
+            for="description"
           >
+            Описание
+          </label>
           <textarea
             v-model="newTask.description"
             id="description"
             rows="3"
-            placeholder="Task description"
-            class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-base resize-none"
+            placeholder="Опишите задачу"
+            class="w-full p-3 bg-white/10 border border-white/30 placeholder-white/60 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 text-base resize-none"
           ></textarea>
-          <div class="mb-4">
-            <label class="block mb-1 font-medium" for="manager_id"
-              >Assign to</label
-            >
-            <select
-              v-model="newTask.user_id"
-              id="user_id"
-              class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-            >
-              <option disabled value="">Select a user</option>
-              <option v-for="mgr in users" :key="mgr.id" :value="mgr.id">
-                {{ mgr.username }}
-              </option>
-            </select>
-          </div>
-          <router-view
-            v-if="selectedTask"
-            :task="selectedTask"
-            @close="selectedTask = null"
-          ></router-view>
-          <div class="mb-4">
-            <label class="block mb-1 font-medium text-gray-700" for="due_date"
-              >Due Date</label
-            >
-            <input
-              v-model="newTask.due_date"
-              id="due_date"
-              type="datetime-local"
-              class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-base"
-            />
-          </div>
         </div>
+
+        <!-- Assign To -->
+        <div>
+          <label
+            class="block mb-1 font-medium text-white"
+            for="assigned_to_id"
+          >
+            Назначить
+          </label>
+          <select
+            v-model="newTask.assigned_to_id"
+            id="assigned_to_id"
+            class="w-full p-3 bg-white/10 border border-white/30 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 text-base"
+          >
+            <option disabled value="">
+              Выберите пользователя
+            </option>
+            <option
+              v-for="mgr in users"
+              :key="mgr.id"
+              :value="mgr.id"
+            >
+              {{ mgr.username }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Due Date -->
+        <div>
+          <label
+            class="block mb-1 font-medium text-white"
+            for="due_date"
+          >
+            Срок окончания
+          </label>
+          <input
+            v-model="newTask.due_date"
+            id="due_date"
+            type="datetime-local"
+            class="w-full p-3 bg-white/10 border border-white/30 placeholder-white/60 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 text-base"
+          />
+        </div>
+
+        <!-- Color Picker -->
         <div class="flex items-center space-x-3">
-          <label class="font-medium text-gray-700">Color:</label>
-          <input type="color" v-model="newTask.color" class="w-8 h-8 rounded" />
+          <label class="font-medium text-white">
+            Цвет задачи:
+          </label>
+          <input
+            type="color"
+            v-model="newTask.color"
+            class="w-8 h-8 rounded border border-white/30"
+          />
         </div>
+
+        <!-- Buttons -->
         <div class="flex justify-end space-x-4 mt-6">
           <button
             type="button"
             @click="showTaskForm = false"
-            class="px-5 py-2 font-medium text-gray-600 hover:text-gray-800"
+            class="px-5 py-2 font-medium text-white/80 hover:text-white"
           >
-            Cancel
+            Отменить
           </button>
           <button
             type="submit"
-            class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700"
+            class="px-6 py-2 bg-white/20 text-white font-semibold rounded-md hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
           >
-            Create
+            Создать
           </button>
         </div>
       </form>
@@ -214,6 +301,7 @@ export default {
     return {
       showTaskForm: false,
       selectedTask: null,
+      activeDropdownId: null,
       newTask: {
         title: "",
         description: "",
@@ -254,6 +342,13 @@ export default {
     loadData() {
       this.fetchStatuses(this.projectId);
       this.fetchTasks(this.projectId);
+    },
+    toggleDropdown(statusId) {
+      if (this.activeDropdownId === statusId) {
+        this.activeDropdownId = null;
+      } else {
+        this.activeDropdownId = statusId;
+      }
     },
     async fetchUsers() {
       try {
@@ -363,6 +458,7 @@ export default {
         project_id: this.projectId,
         status_id: this.newTask.status_id,
         color: this.newTask.color || "#f0f0f0",
+        assigned_to_id: this.newTask.assigned_to_id,
         user_id: this.newTask.user_id,
         due_date: this.newTask.due_date,
       });

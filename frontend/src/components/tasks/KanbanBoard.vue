@@ -96,12 +96,12 @@
 
           <!-- + Добавить карточку -->
           <button
-            @click="openNewTaskForm(status.id)"
-            class="mt-3 w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg bg-transparent hover:shadow-sm hover:scale-[1.01] hover:backdrop-brightness-105 transition-all duration-200 ease-in-out cursor-pointer"
+          @click="openNewTaskForm(status.id)"
+          class="mt-3 w-full flex items-center px-3 py-2 text-sm rounded-lg bg-transparent hover:shadow-sm hover:scale-[1.01] hover:backdrop-brightness-105 transition-all duration-200 ease-in-out cursor-pointer"
           >
-            <span class="text-white font-normal">Добавить карточку</span>
+          <div class="flex items-center space-x-2">
             <svg
-              class="w-5 h-5 text-white opacity-70"
+              class="w-5 h-5 text-white"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -113,7 +113,10 @@
                 d="M12 4v16m8-8H4"
               />
             </svg>
-          </button>
+            <span class="text-white font-normal">Добавить карточку</span>
+          </div>
+        </button>
+
         </section>
       </template>
     </draggable>
@@ -132,35 +135,39 @@
         </button>
       </div>
 
-      <div v-else class="w-[280px] bg-white p-5 rounded-md shadow-md mt-0">
-        <input
-          v-model="newStatusName"
-          type="text"
-          placeholder="Введите название статуса"
-          class="w-full p-3 border-b border-gray-300 focus:outline-none focus:border-blue-500 mb-4 text-base font-medium"
-        />
-        <div class="flex items-center space-x-3 mb-3">
-          <label class="font-medium text-gray-700">Цвет:</label>
+      <div v-else class="bg-black/90 p-4 rounded-xl w-80 space-y-3">
+        <div class="flex items-center space-x-2">
           <input
-            type="color"
-            v-model="newStatusColor"
-            class="w-8 h-8 rounded"
+            v-model="newStatusName"
+            type="text"
+            placeholder="Введите название статуса"
+            class="flex-1 h-8 px-3 py-1 rounded border-none bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
+          <div class="flex items-center space-x-1">
+            <span class="text-black"></span>
+            <input
+              type="color"
+              v-model="newStatusColor"
+              class="w-8 h-8 p-0 border-none bg-black rounded cursor-pointer"
+              title="Выберите цвет"
+            />
+          </div>
         </div>
-        <div class="flex justify-end space-x-3">
-          <button
-            @click="cancelAddStatus"
-            class="px-3 py-2 text-gray-600 font-medium hover:text-gray-800"
-          >
-            Отменить
-          </button>
+
+        <div class="flex justify-start space-x-3">
           <button
             @click="confirmAddStatus"
-            class="px-4 py-2 bg-green-600 text-white font-medium rounded-md hover:bg-green-800 transition disabled:opacity-50"
+            class="h-8 px-4 py-0 bg-[#0000FF] text-black font-medium rounded-md shadow-md flex items-center justify-center"
             :disabled="statusLoading || !newStatusName.trim()"
           >
             <span v-if="statusLoading">Добавление...</span>
-            <span v-else>Добавить</span>
+            <span v-else>Добавить список</span>
+          </button>
+          <button
+            @click="cancelAddStatus"
+            class="text-white text-xl hover:text-gray-300"
+          >
+            ✕
           </button>
         </div>
       </div>
@@ -172,17 +179,14 @@
     v-if="showTaskForm"
     class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50"
   >
-    <div class="w-full max-w-lg p-8 rounded-xl shadow-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white">
-      <h3 class="text-2xl font-bold mb-6">
-        Создать новую задачу
-      </h3>
+    <div
+      class="w-full max-w-lg p-8 rounded-xl shadow-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white"
+    >
+      <h3 class="text-2xl font-bold mb-6">Создать новую задачу</h3>
       <form @submit.prevent="handleCreateTask" class="space-y-5">
         <!-- Task Title -->
         <div>
-          <label
-            class="block mb-1 font-medium text-white"
-            for="title"
-          >
+          <label class="block mb-1 font-medium text-white" for="title">
             Название задачи
           </label>
           <input
@@ -197,10 +201,7 @@
 
         <!-- Description -->
         <div>
-          <label
-            class="block mb-1 font-medium text-white"
-            for="description"
-          >
+          <label class="block mb-1 font-medium text-white" for="description">
             Описание
           </label>
           <textarea
@@ -214,25 +215,16 @@
 
         <!-- Assign To -->
         <div>
-          <label
-            class="block mb-1 font-medium text-white"
-            for="assigned_to_id"
-          >
+          <label class="block mb-1 font-medium text-white" for="assigned_to_id">
             Назначить
           </label>
           <select
             v-model="newTask.assigned_to_id"
             id="assigned_to_id"
-            class="w-full p-3 bg-white/10 border border-white/30 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 text-base"
+            class="w-full p-3 bg-white/10 border border-white/30 text-black rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
           >
-            <option disabled value="">
-              Выберите пользователя
-            </option>
-            <option
-              v-for="mgr in users"
-              :key="mgr.id"
-              :value="mgr.id"
-            >
+            <option disabled value="">Выберите пользователя</option>
+            <option v-for="mgr in users" :key="mgr.id" :value="mgr.id">
               {{ mgr.username }}
             </option>
           </select>
@@ -240,10 +232,7 @@
 
         <!-- Due Date -->
         <div>
-          <label
-            class="block mb-1 font-medium text-white"
-            for="due_date"
-          >
+          <label class="block mb-1 font-medium text-white" for="due_date">
             Срок окончания
           </label>
           <input
@@ -256,13 +245,11 @@
 
         <!-- Color Picker -->
         <div class="flex items-center space-x-3">
-          <label class="font-medium text-white">
-            Цвет задачи:
-          </label>
+          <label class="font-medium"> Цвет задачи: </label>
           <input
             type="color"
             v-model="newTask.color"
-            class="w-8 h-8 rounded border border-white/30"
+            class="w-8 h-8 rounded border border-black/30 p-0 appearance-none"
           />
         </div>
 

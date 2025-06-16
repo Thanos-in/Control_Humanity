@@ -19,6 +19,7 @@ const routes = [
       { path: 'chat/:id', component: () => import('../components/chat/ChatWindow.vue') },
       { path: 'ratings', component: () => import('../components/ratings/RatingForm.vue') },
       { path: 'tasks', component: () => import('../components/tasks/KanbanBoard.vue') }, 
+      { path: 'mytasks', component: () => import('../components/tasks/MyTasks.vue') }, 
       { path: 'taskform/:taskId', component: () => import('../components/tasks/TaskForm.vue') }, 
       { path: 'users', name: 'UserList', component: () => import('../components/auth/UsersList.vue')},
     ]

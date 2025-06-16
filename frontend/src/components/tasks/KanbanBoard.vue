@@ -1,5 +1,5 @@
 <template>
-  <div class="flex gap-6 pb-6">
+  <div class="flex items-start gap-6 pb-6">
     <draggable
       :list="statuses"
       group="statuses"
@@ -10,7 +10,7 @@
     >
       <template #item="{ element: status }">
         <section
-          class="w-80 rounded-xl p-4 shadow-md flex flex-col"
+          class="mt-3 w-80 min-h-20 rounded-xl p-4 shadow-md flex flex-col self-start"
           :style="{ backgroundColor: status.color || '#ffffff' }"
           :data-status-id="status.id"
         >
@@ -73,8 +73,7 @@
           >
             <template #item="{ element: task }">
               <div
-                class="p-3 rounded-lg shadow-sm hover:shadow-md transition cursor-pointer"
-                :style="{ backgroundColor: task.color || '#f0f0f0' }"
+                class=""
                 @click.stop="openTaskForm(task)"
               >
                 <TaskCard
@@ -84,12 +83,6 @@
                   :text-color="getTextColor(task.color)"
                 />
 
-                <div
-                  v-if="task.due_date"
-                  class="mt-2 text-xs text-gray-200 bg-black bg-opacity-20 rounded-md px-2 py-1 inline-block"
-                >
-                  Срок: {{ formatDate(task.due_date) }}
-                </div>
               </div>
             </template>
           </draggable>
@@ -120,7 +113,7 @@
         </section>
       </template>
     </draggable>
-
+    
     <!-- Add Status Column -->
     <section class="w-90 flex-shrink-0">
       <div
@@ -135,7 +128,7 @@
         </button>
       </div>
 
-      <div v-else class="bg-neutral-900/90 border border-neutral-700 p-4 rounded-xl w-80 space-y-3 text-gray-200">
+      <div v-else class="mt-3 bg-neutral-900/90 border border-neutral-700 p-4 rounded-xl w-80 space-y-3 text-gray-200">
         <div class="flex items-center space-x-2">
           <input
             v-model="newStatusName"

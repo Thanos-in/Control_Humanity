@@ -12,6 +12,13 @@ class Status(models.Model):
     blank=True,
     related_name='statuses'
     )
+    user = models.ForeignKey(
+    settings.AUTH_USER_MODEL,
+    on_delete=models.CASCADE,
+    null=True,
+    blank=True,
+    related_name='statuses'
+    )
     order = models.PositiveIntegerField(default=0)
     color = models.CharField(max_length=7, default='#FFFFFF')
 
@@ -60,3 +67,24 @@ class Task(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.project.name})"
+
+class SimpleTask(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    status = models.ForeignKey(
+        Status,
+        on_delete=models.CASCADE,
+        related_name='simple_tasks'
+    )
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='simple_created_tasks'
+    )
+    color = models.CharField(max_length=7, default='#FFFFFF')    
+    created_at = models.DateTimeField(default=timezone.now)
+    due_date = models.DateTimeField(null=True, blank=True)
+    
+    def __str__(self):
+        return self.title
+

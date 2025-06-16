@@ -29,17 +29,17 @@
       <li
         v-for="proj in projects"
         :key="proj.id"
-        class="bg-white/90 p-4 rounded-xl shadow hover:shadow-lg transition transform hover:scale-101 flex flex-col justify-between min-h-[160px]"
+        class="bg-neutral-900/90 backdrop-blur-md border border-neutral-700 p-4 rounded-xl shadow hover:shadow-lg transition transform hover:scale-101 flex flex-col justify-between min-h-[160px] text-gray-200"
       >
         <div class="flex justify-between items-start">
           <router-link
             :to="`/projects/${proj.id}`"
             class="flex-1 pr-3 space-y-1"
           >
-            <h3 class="text-xl font-semibold text-purple-800">
+            <h3 class="text-xl font-semibold text-white-800">
               {{ proj.name }}
             </h3>
-            <p class="text-gray-700 text-sm">{{ proj.description }}</p>
+            <p class="text-gray-400 text-sm">{{ proj.description }}</p>
           </router-link>
           <!-- Delete Button -->
           <button
@@ -63,11 +63,11 @@
           </button>
         </div>
         <!-- Director / Manager -->
-        <div class="mt-2 text-gray-600 text-xs">
-          Директор: {{ proj.director.username
-          }}<span v-if="proj.manager">
-            | Менеджер: {{ proj.manager.username }}</span
-          >
+        <div class="mt-2 text-gray-400 text-xs">
+          Директор: {{ proj.director.username }}
+          <span v-if="proj.manager">
+            | Менеджер: {{ proj.manager.username }}
+          </span>
         </div>
       </li>
     </ul>
@@ -77,14 +77,14 @@
       v-if="inlineDeleteId"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
     >
-      <div class="bg-white rounded-lg shadow p-6 w-80">
-        <p class="text-gray-800 text-sm mb-4">
+      <div class="bg-neutral-900/90 backdrop-blur-md border border-neutral-700 rounded-lg shadow p-6 w-80 text-gray-200">
+        <p class="text-sm mb-4">
           Вы действительно хотите удалить проект?
         </p>
         <div class="flex justify-end space-x-2">
           <button
             @click="cancelDelete"
-            class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
+            class="px-3 py-1 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 text-xs"
           >
             Отменить
           </button>
@@ -98,11 +98,13 @@
       </div>
     </div>
   </div>
+
   <!-- Modal: New Project -->
   <Modal v-if="showForm" @close="showForm = false">
     <ProjectForm @saved="onProjectSaved" @cancel="showForm = false" />
   </Modal>
 </template>
+
 
 <script>
 import { mapGetters, mapActions, mapState } from "vuex";

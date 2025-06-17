@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from .models import Task, Status, SimpleTask
 from accounts.serializers import UserSerializer
-from projects.serializers import ProjectSerializer
 from django.contrib.auth import get_user_model
 from projects.models import Project
 
@@ -10,20 +9,13 @@ User = get_user_model()
 class StatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Status
-        fields = ('id', 'name', 'order', 'project', 'color')
-
-from rest_framework import serializers
-from django.contrib.auth import get_user_model
-from .models import Task, Status, Project
-from .serializers import UserSerializer, StatusSerializer, ProjectSerializer
-
-User = get_user_model()
+        fields = ('id', 'name', 'order', 'project', 'color', 'is_default')
 
 class TaskSerializer(serializers.ModelSerializer):
     # Read-only nested serializers
     assigned_to   = UserSerializer(read_only=True)
     status        = StatusSerializer(read_only=True)
-    project       = ProjectSerializer(read_only=True)
+    project       = serializers.PrimaryKeyRelatedField(read_only=True)
     created_by = UserSerializer(read_only=True)
 
     assigned_to_id = serializers.PrimaryKeyRelatedField(
@@ -38,10 +30,10 @@ class TaskSerializer(serializers.ModelSerializer):
         write_only=True
     )
     project_id     = serializers.PrimaryKeyRelatedField(
-        queryset=Project.objects.all(),
-        source='project',
-        write_only=True
-    )
+         queryset=Project.objects.all(),
+         source='project',
+         write_only=True
+     )
 
     class Meta:
         model = Task

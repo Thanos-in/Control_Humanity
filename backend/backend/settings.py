@@ -21,9 +21,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    'tasks.apps.TasksConfig',
     'accounts',
     'projects',
-    'tasks',
     'chat',
     'ratings',
 ]

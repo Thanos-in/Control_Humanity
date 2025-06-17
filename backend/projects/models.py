@@ -19,9 +19,19 @@ class Project(models.Model):
         blank=True,
         limit_choices_to={'role': 'manager'}
     )
-    created_at = models.DateTimeField(auto_now_add=True)
+    start_date = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    data_input = models.DateTimeField(default=timezone.now)
+    is_archived = models.BooleanField(default=False)
+    image = models.ImageField(upload_to='projects/images/', null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return self.name
+
+
+class Module(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='modules')
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"{self.project.name} – {self.name}"

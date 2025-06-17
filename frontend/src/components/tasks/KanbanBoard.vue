@@ -73,7 +73,8 @@
           >
             <template #item="{ element: task }">
               <div
-                class=""
+                class="p-3 rounded-lg shadow-sm hover:shadow-md transition cursor-pointer"
+                :style="{ backgroundColor: task.color || '#f0f0f0' }"
                 @click.stop="openTaskForm(task)"
               >
                 <TaskCard
@@ -83,6 +84,12 @@
                   :text-color="getTextColor(task.color)"
                 />
 
+                <div
+                  v-if="task.due_date"
+                  class="mt-2 text-xs text-gray-200 bg-black bg-opacity-20 rounded-md px-2 py-1 inline-block"
+                >
+                  Срок: {{ formatDate(task.due_date) }}
+                </div>
               </div>
             </template>
           </draggable>
@@ -273,7 +280,7 @@
 import { mapState, mapActions } from "vuex";
 import draggable from "vuedraggable";
 import TaskCard from "./TaskCard.vue";
-import axios from "axios";
+import api from "@/utils/axios";
 
 export default {
   name: "KanbanBoard",
@@ -334,7 +341,7 @@ export default {
     },
     async fetchUsers() {
       try {
-        const response = await axios.get("/api/auth/users/users/");
+        const response = await api.get("/auth/users/users/");
         this.users = response.data;
       } catch (err) {
         console.error("Failed to fetch users:", err);
@@ -348,10 +355,10 @@ export default {
 
       try {
         await Promise.all(
-          updates.map((u) =>
-            axios.patch(`/api/tasks/statuses/${u.id}/`, { order: u.order })
-          )
-        );
+        updates.map((u) =>
+          api.patch(`/tasks/statuses/${u.id}/`, { order: u.order })
+        )
+      );
 
         this.statuses = [...this.statuses];
 
@@ -367,7 +374,7 @@ export default {
       );
       if (oldStatusId === newStatusId) return;
       try {
-        await axios.patch(`/api/tasks/${task.id}/`, { status_id: newStatusId });
+        await api.patch(`/tasks/${task.id}/`, { status_id: newStatusId });
         await this.fetchTasks(this.projectId);
       } catch (err) {
         console.error("Failed to update task:", err);

@@ -2,7 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import store from '../store'
 
 const routes = [
-  { path: '/', component: () => import('../components/auth/Login.vue') },
+  { path: '/', redirect: '/login' },
+  { path: '/login', name: 'Login', component: () => import('../components/auth/Login.vue') },
   { path: '/register', component: () => import('../components/auth/Register.vue') },
   { 
     path: '/profile/:userId?', component: () => import('../components/auth/Profile.vue'),
@@ -13,7 +14,7 @@ const routes = [
     component: () => import('../components/Layout.vue'),
     meta: { requiresAuth: true },
     children: [
-      { path: 'projects', component: () => import('../components/projects/ProjectList.vue') },
+      { path: 'projects', component: () => import('../components/projects/ProjectsTable.vue') },
       { path: 'projects/:id', component: () => import('../components/projects/ProjectDetail.vue') },
       { path: 'chat', component: () => import('../components/chat/ChatList.vue') },
       { path: 'chat/:id', component: () => import('../components/chat/ChatWindow.vue') },

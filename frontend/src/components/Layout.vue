@@ -135,7 +135,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from "@/utils/axios"; 
 
 export default {
   name: "Layout",
@@ -178,7 +178,7 @@ export default {
   async created() {
     try {
       const id = this.$store.state.auth.user.id;
-      const response = await axios.get(`/api/auth/profiles/${id}/`);
+      const response = await api.get(`/auth/profiles/${id}/`);
       this.profile = response.data;
     } catch (e) {
       this.error = "Failed to load profile.";

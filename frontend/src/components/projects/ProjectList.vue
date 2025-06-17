@@ -127,7 +127,6 @@ export default {
     ...mapState("auth", ["user"]), // ←– CHANGED: pull in current user
     projects() {
       // ←– CHANGED: filter by manager
-      // direktor ham ko‘rsin, ammo manager faqat o‘ziga tegishlilarni
       if (this.user.role === "director") {
         return this.allProjects;
       }

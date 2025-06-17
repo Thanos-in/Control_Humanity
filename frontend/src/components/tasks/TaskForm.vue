@@ -230,7 +230,7 @@
 <script setup>
 import { ref, onMounted, nextTick } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import axios from "axios";
+import api from "@/utils/axios"; 
 
 const route = useRoute();
 const router = useRouter();
@@ -246,19 +246,20 @@ const task = ref({
 const editingDesc = ref(false);
 const editedHtml = ref("");
 
+const editorRef = ref(null);
+
 // Загрузка задачи
 function fetchTask() {
-  axios
-    .get(`/api/tasks/${taskId}/`)
+  api
+    .get(`/tasks/${taskId}/`)
     .then((res) => {
       task.value = res.data;
     })
     .catch((err) => console.error("Task yuklanmadi:", err));
 }
 
-// Форматирование через execCommand
+// Форматирование текста
 function format(cmd) {
-  let value;
   switch (cmd) {
     case "h1":
       document.execCommand("formatBlock", false, "<h1>");
@@ -282,8 +283,9 @@ function startEditingDesc() {
   editingDesc.value = true;
   editedHtml.value = task.value.description || "";
   nextTick(() => {
-    // Устанавливаем содержимое
-    editorRef.value.innerHTML = editedHtml.value;
+    if (editorRef.value) {
+      editorRef.value.innerHTML = editedHtml.value;
+    }
   });
 }
 
@@ -296,24 +298,17 @@ function cancelDescription() {
 function submitEdit() {
   const payload = {
     title: task.value.title,
-    description: editorRef.value,
     project_id: task.value.project_id,
     status_id: task.value.status_id,
   };
-  console.log("Yuborilayotgan payload:", payload);
 
-  // Faqat description tahrirlanayotgan bo‘lsa, uni yangilash
   if (editingDesc.value && editorRef.value) {
     payload.description = editorRef.value.innerHTML;
-  } else {
-    // Bu holatda description umuman yuborilmaydi
-    delete payload.description;
   }
 
-  axios
-    .put(`/api/tasks/${taskId}/`, payload)
+  api
+    .put(`/tasks/${taskId}/`, payload)
     .then((res) => {
-      console.table(res.data);
       task.value = res.data;
       editingDesc.value = false;
       alert("Описание успешно обновлено");
@@ -327,7 +322,6 @@ function submitEdit() {
     });
 }
 
-// Утилиты
 function formatDate(d) {
   if (!d) return "Noma’lum";
   return new Date(d).toLocaleDateString();
@@ -337,10 +331,9 @@ function closeModal() {
   router.back();
 }
 
-const editorRef = ref(null);
-
 onMounted(fetchTask);
 </script>
+
 
 <style scoped>
 /* Можно добавить дополнительные стили для заголовков внутри contenteditable */

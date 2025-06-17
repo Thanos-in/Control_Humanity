@@ -3,7 +3,7 @@
     <!-- <p>{{ project.description }}</p> -->
 
     <!-- Kanban board -->
-    <KanbanBoard :projectId="projectId" />
+    <!-- <KanbanBoard :projectId="projectId" /> -->
 </template>
 
 <script>

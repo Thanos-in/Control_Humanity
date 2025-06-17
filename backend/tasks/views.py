@@ -27,6 +27,15 @@ class StatusViewSet(viewsets.ModelViewSet):
             return Status.objects.filter(project__isnull=True).order_by('order')
         return Status.objects.all()
 
+    def destroy(self, request, *args, **kwargs):
+        status_obj = self.get_object()
+        if status_obj.is_default:
+            return Response(
+                {"detail": "Default statuslarni o‘chirish mumkin emas."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        return super().destroy(request, *args, **kwargs)
+
     def perform_update(self, serializer):
         serializer.save()
 

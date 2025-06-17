@@ -1,30 +1,19 @@
 from django.db import models
 from django.conf import settings
-from projects.models import Project
+from projects.models import Project, Module
 from django.utils import timezone
 
 class Status(models.Model):
     name = models.CharField(max_length=50)
-    project = models.ForeignKey(
-    Project,
-    on_delete=models.CASCADE,
-    null=True,
-    blank=True,
-    related_name='statuses'
-    )
-    user = models.ForeignKey(
-    settings.AUTH_USER_MODEL,
-    on_delete=models.CASCADE,
-    null=True,
-    blank=True,
-    related_name='statuses'
-    )
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, null=True, blank=True, related_name='statuses')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True, related_name='statuses')
     order = models.PositiveIntegerField(default=0)
     color = models.CharField(max_length=7, default='#FFFFFF')
-
+    is_default = models.BooleanField(default=False)
+    
     class Meta:
         unique_together = ('name', 'project')
-        ordering = ['order']
+        ordering = ['order', 'id']
 
     def __str__(self):
 
@@ -64,6 +53,9 @@ class Task(models.Model):
     data_input = models.DateTimeField(default=timezone.now)
     due_date = models.DateTimeField(null=True, blank=True)
     color = models.CharField(max_length=7, default='#FFFFFF')
+    is_archived   = models.BooleanField(default=False)
+    module        = models.ForeignKey(Module, on_delete=models.CASCADE,
+                                      related_name='tasks', null=True, blank=True)
 
     def __str__(self):
         return f"{self.title} ({self.project.name})"

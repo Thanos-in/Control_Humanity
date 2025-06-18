@@ -16,4 +16,3 @@ def ensure_default_statuses(sender, **kwargs):
                 name=name,
                 defaults={'order': order, 'is_default': is_def}
             )
-            print("✅ signals.py yuklandi")

@@ -25,6 +25,13 @@ const actions = {
       commit('setLoading', false)
     }
   },
+  
+  async fetchProjectById({ commit }, id) {
+    const response = await api.get(`/projects/${id}/`);
+    const project = response.data;
+    commit("SET_PROJECT", project);
+    return project; 
+  },
 
   async createProject({ dispatch, commit }, projectData) {
     commit('setLoading', true)

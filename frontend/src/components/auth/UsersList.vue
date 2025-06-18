@@ -75,7 +75,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import api from '@/utils/axios';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import defaultAvatar from '../../assets/Default.png'
@@ -93,7 +93,7 @@ export default {
     const fetchUsers = async () => {
       loading.value = true;
       try {
-        const response = await axios.get('/api/auth/users/allusers/');
+        const response = await api.get('/auth/users/allusers/');
         users.value = response.data;
       } catch (err) {
         error.value = 'Failed to load users.';
@@ -120,7 +120,7 @@ export default {
     const deleteUser = async (id) => {
       if (!confirm('Are you sure you want to delete this user?')) return;
       try {
-        await axios.delete(`/api/auth/profiles/${id}/`);
+        await api.delete(`/auth/profiles/${id}/`);
         users.value = users.value.filter((u) => u.id !== id);
       } catch {
         alert('Delete failed.');

@@ -121,8 +121,53 @@
         class="fixed top-[50px] left-0 h-[calc(100vh-50px)] w-56 bg-neutral-900/90 backdrop-blur-md border-r border-neutral-700 shadow-inner z-40 px-3 py-5 text-gray-200"
       >
         <nav class="flex flex-col space-y-2">
+          <!-- E‑commerce dropdown -->
+          <div class="relative">
+            <button
+              @click="toggleProjects"
+              class="flex items-center w-full px-2 py-1 text-sm font-medium text-gray-300 hover:text-white rounded transition"
+            >
+              Проекты
+              <svg
+                class="w-3 h-3 ml-auto text-gray-400 transition-transform duration-200"
+                :class="{ 'rotate-180': showEcomDropdown }"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 10 6"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m1 1 4 4 4-4" />
+              </svg>
+            </button>
+            <ul
+              v-show="showProjectsDropdown"
+              class="mt-1 space-y-1 bg-neutral-800 rounded-md shadow-lg overflow-hidden"
+            >
+              <li>
+                <router-link
+                  to="/projects"
+                  class="block px-4 py-2 text-sm text-gray-300 hover:bg-neutral-700 hover:text-white transition"
+                >
+                  Все проекты
+                </router-link>
+              </li>
+              <li>
+                <router-link
+                  to="/projects?archived=true"
+                  class="block px-4 py-2 text-sm text-gray-300 hover:bg-neutral-700 hover:text-white transition"
+                >
+                  Архив
+                </router-link>
+              </li>
+            </ul>
+          </div>
+          
+          <!-- Boshqa linklar -->
           <router-link
-            v-for="(label, path) in navLinks"
+            v-for="(label, path) in otherLinks"
             :key="path"
             :to="path"
             class="text-sm font-medium text-gray-300 hover:text-white px-2 py-1 rounded transition"
@@ -130,6 +175,7 @@
           >
             {{ label }}
           </router-link>
+
         </nav>
       </aside>
 
@@ -141,7 +187,6 @@
         ]"
       >
         <router-view />
-        <!-- <ProjectProgressChart v-if="$route.path === '/projects'" /> -->
       </main>
     </div>
   </div>
@@ -150,7 +195,6 @@
 <script>
 import api from "@/utils/axios";
 import ProjectProgressChart from "@/components/ui/ProjectProgressChart.vue";
-
 
 export default {
   components: { ProjectProgressChart },
@@ -161,8 +205,9 @@ export default {
       showSidebar: true,
       isDropdownOpen: false,
       currentLanguage: "Ru",
-      navLinks: {
-        "/projects": "Проекты",
+      showProjectsDropdown: false,
+      showEcomDropdown: false,
+      otherLinks: {
         "/mytasks": "Задачи",
         "/chat": "Чаты",
         "/users": "Пользователи",
@@ -189,8 +234,13 @@ export default {
         .map((n) => n.charAt(0).toUpperCase())
         .join("");
     },
+    toggleProjects() {
+      this.showProjectsDropdown = !this.showProjectsDropdown;
+    },
+    toggleEcom() {
+      this.showEcomDropdown = !this.showEcomDropdown;
+    },
   },
-
   async created() {
     try {
       const id = this.$store.state.auth.user.id;

@@ -40,6 +40,7 @@
             class="h-7 w-[700px] px-3 rounded-lg bg-white/20 placeholder-white text-white text-sm focus:bg-white/30 focus:outline-none transition"
           />
           <button
+            @click="showForm = true"
             class="h-8 px-4 bg-blue-500 hover:bg-blue-600 text-black text-sm font-medium rounded-md shadow transition-colors duration-200"
           >
             Создать
@@ -129,7 +130,7 @@
               Проекты
               <svg
                 class="w-3 h-3 ml-auto text-gray-400 transition-transform duration-200"
-                :class="{ 'rotate-180': showEcomDropdown }"
+                :class="{ 'rotate-180': showProjectsDropdown }"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 10 6"
@@ -189,20 +190,28 @@
       </main>
     </div>
   </div>
+
+  <!-- Modal: New Project -->
+<Modal v-if="showForm" @close="showForm = false">
+  <ProjectForm @saved="onProjectSaved" @cancel="showForm = false" />
+</Modal>
 </template>
 
 <script>
 import api from "@/utils/axios";
 import ProjectProgressChart from "@/components/ui/ProjectProgressChart.vue";
+import Modal from "@/components/ui/Modal.vue";
+import ProjectForm from "@/components/projects/ProjectForm.vue";
 
 export default {
-  components: { ProjectProgressChart },
+  components: { ProjectProgressChart, ProjectForm, Modal },
   name: "Layout",
   data() {
     return {
       profile: {},
       showSidebar: true,
       isDropdownOpen: false,
+      showForm: false,
       currentLanguage: "Ru",
       showProjectsDropdown: true,
       otherLinks: {
@@ -215,6 +224,10 @@ export default {
     };
   },
   methods: {
+    onProjectSaved() {
+      this.showForm = false;
+      // this.$router.go();
+    },
     toggleSidebar() {
       this.showSidebar = !this.showSidebar;
     },

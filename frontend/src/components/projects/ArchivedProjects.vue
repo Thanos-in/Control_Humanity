@@ -24,7 +24,7 @@
             >
               {{ proj.name }}
             </th>
-            <td class="px-6 py-4">{{ proj.manager.username }}</td>
+            <td class="px-6 py-4">{{ proj.manager?.username || '—'  }}</td>
             <td class="px-6 py-4">{{ proj.period }}</td>
             <td class="relative px-6 py-4 text-right">
               <svg
@@ -104,7 +104,7 @@ export default {
     async deleteProject(projectId) {
       try {
         await api.delete(`/projects/${projectId}/`);
-        await this.reloadArchivedProjects(); // o‘chirgandan keyin qayta yuklash
+        await this.reloadArchivedProjects(); 
       } catch (error) {
         console.error("O‘chirishda xatolik:", error);
       }

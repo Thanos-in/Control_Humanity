@@ -8,7 +8,7 @@ from rest_framework.response import Response
 
 class ProjectViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
-        if self.action in ['archive', 'destroy', 'update', 'partial_update', 'retrieve']:
+        if self.action in ['archive', 'destroy', 'update', 'partial_update', 'retrieve', 'archivedprojects']:
             return Project.objects.all()  
         return Project.objects.filter(is_archived=False)
     serializer_class = ProjectSerializer

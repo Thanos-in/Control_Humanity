@@ -1,17 +1,18 @@
 <template>
-<div
-    class="fixed inset-0 flex items-center justify-center
-           bg-neutral-900/90 backdrop-blur-md">
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+  >
     <div
-      class="bg-neutral-900/90 backdrop-blur-md
-             border border-neutral-700 text-gray-200
-             p-6 rounded-lg shadow-lg w-full max-w-3xl">
-      <slot/>
+      class="bg-[#121212] border border-neutral-700 text-white p-6 rounded-xl shadow-xl w-full max-w-3xl"
+    >
+      <slot />
     </div>
-  </div></template>
+  </div>
+</template>
+
 
 <script>
 export default {
-  name: 'Modal',
-}
+  name: "Modal",
+};
 </script>

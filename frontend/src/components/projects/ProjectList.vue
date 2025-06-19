@@ -77,10 +77,10 @@
       v-if="inlineDeleteId"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
     >
-      <div class="bg-neutral-900/90 backdrop-blur-md border border-neutral-700 rounded-lg shadow p-6 w-80 text-gray-200">
-        <p class="text-sm mb-4">
-          Вы действительно хотите удалить проект?
-        </p>
+      <div
+        class="bg-neutral-900/90 backdrop-blur-md border border-neutral-700 rounded-lg shadow p-6 w-80 text-gray-200"
+      >
+        <p class="text-sm mb-4">Вы действительно хотите удалить проект?</p>
         <div class="flex justify-end space-x-2">
           <button
             @click="cancelDelete"
@@ -104,7 +104,6 @@
     <ProjectForm @saved="onProjectSaved" @cancel="showForm = false" />
   </Modal>
 </template>
-
 
 <script>
 import { mapGetters, mapActions, mapState } from "vuex";
@@ -139,7 +138,11 @@ export default {
     ...mapActions("projects", ["fetchProjects", "deleteProject"]),
     onProjectSaved() {
       this.showForm = false;
-      this.fetchProjects();
+      if (this.$route.path === "/projects") {
+        this.$router.go(); 
+      } else {
+        this.$router.push("/projects");
+      }
     },
     openDeleteInline(id) {
       this.inlineDeleteId = id;

@@ -14,16 +14,16 @@ const routes = [
     component: () => import('../components/Layout.vue'),
     meta: { requiresAuth: true },
     children: [
-      { path: 'projects', component: () => import('../components/projects/ProjectsTable.vue') },
-      { path: 'archivedprojects', component: () => import('../components/projects/ArchivedProjects.vue') },
-      { path: 'projects/:id', component: () => import('../components/projects/ProjectDetail.vue') },
-      { path: 'chat', component: () => import('../components/chat/ChatList.vue') },
-      { path: 'chat/:id', component: () => import('../components/chat/ChatWindow.vue') },
-      { path: 'ratings', component: () => import('../components/ratings/RatingForm.vue') },
-      { path: 'tasks', component: () => import('../components/tasks/KanbanBoard.vue') }, 
-      { path: 'mytasks', component: () => import('../components/tasks/MyTasks.vue') }, 
-      { path: 'taskform/:taskId', component: () => import('../components/tasks/TaskForm.vue') }, 
-      { path: 'users', name: 'UserList', component: () => import('../components/auth/UsersList.vue')},
+      { path: 'projects', component: () => import('@/components/projects/ProjectsTable.vue') },
+      { path: 'archivedprojects', component: () => import('@/components/projects/ArchivedProjects.vue') },
+      { path: 'projects/:id', component: () => import('@/components/projects/ProjectDetail.vue') },
+      { path: 'chat', component: () => import('@/components/chat/ChatList.vue') },
+      { path: 'chat/:id', component: () => import('@/components/chat/ChatWindow.vue') },
+      { path: 'ratings', component: () => import('@/components/ratings/RatingForm.vue') },
+      { path: 'tasks', component: () => import('@/components/tasks/KanbanBoard.vue') }, 
+      { path: 'mytasks', component: () => import('@/components/tasks/MyTasks.vue') }, 
+      { path: 'taskform/:taskId', component: () => import('@/components/tasks/TaskForm.vue') }, 
+      { path: 'users', name: 'UserList', component: () => import('@/components/auth/UsersList.vue')},
     ]
   }
 ]

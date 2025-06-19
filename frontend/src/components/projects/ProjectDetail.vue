@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-[300px_1fr] h-full p-4 gap-6">
+ <div class="grid grid-cols-[300px_1fr] h-full p-4 gap-6">
     <!-- Sidebar -->
     <aside class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md">
       <img
@@ -263,7 +263,7 @@
                   </tr>
                 </tbody>
               </table>
-            </div>
+            </div> 
           </template>
 
           <template v-else>
@@ -275,6 +275,7 @@
       </div>
     </section>
   </div>
+ <!-- <KanbanBoard :projectId="projectId" /> -->
 </template>
 
 <script>

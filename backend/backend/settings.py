@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'projects',
     'chat',
     'ratings',
+    # "django_rq",
 ]
 
 MIDDLEWARE = [
@@ -105,6 +106,16 @@ REST_FRAMEWORK = {
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+TELEGRAM_BOT_TOKEN = "8040016996:AAGRy-acyXz_Y3UwdJINC4oxsphE39BgeyE"
+
+# RQ_QUEUES = {
+#     "default": {
+#         "HOST": "localhost",
+#         "PORT": 6379,
+#         "DB": 0,
+#         "DEFAULT_TIMEOUT": 360, 
+#     },
+# }
 
 JAZZMIN_SETTINGS = {
     "site_title": "Your Admin Panel",

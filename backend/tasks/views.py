@@ -3,6 +3,7 @@ from .models import Task, Status, SimpleTask
 from .serializers import TaskSerializer, StatusSerializer, SimpleTaskSerializer
 from .permissions import IsManagerOrDirector, IsEmployeeOrManager
 from django.db.models import Q
+from tasks.utils import send_telegram_message
 
 class StatusViewSet(viewsets.ModelViewSet):
     queryset = Status.objects.all()
@@ -63,13 +64,26 @@ class TaskViewSet(viewsets.ModelViewSet):
             return Task.objects.filter(project__director=user)
         return Task.objects.none()
 
+    
     def perform_create(self, serializer):
-        # Include due_date if provided in request data
         due_date = self.request.data.get('due_date')
         save_kwargs = {'created_by': self.request.user}
         if due_date is not None:
             save_kwargs['due_date'] = due_date
-        serializer.save(**save_kwargs)
+
+        task = serializer.save(**save_kwargs)
+
+        user = task.assigned_to
+        print(task.assigned_to)
+        if user and getattr(user, 'telegram_id', None):
+            text = (
+                f"Salom {user.first_name}!\n"
+                f"Sizga yangi vazifa berildi:\n"
+                f"• Nomi: {task.title}\n"
+                f"• Ta’rif: {task.description}\n"
+                f"• Muddati: {task.due_date}\n"
+            )
+            send_telegram_message(user.telegram_id, text)
 
     def perform_update(self, serializer):
         # Handle due_date updates along with updated_by

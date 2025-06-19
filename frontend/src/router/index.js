@@ -15,6 +15,7 @@ const routes = [
     meta: { requiresAuth: true },
     children: [
       { path: 'projects', component: () => import('../components/projects/ProjectsTable.vue') },
+      { path: 'archivedprojects', component: () => import('../components/projects/ArchivedProjects.vue') },
       { path: 'projects/:id', component: () => import('../components/projects/ProjectDetail.vue') },
       { path: 'chat', component: () => import('../components/chat/ChatList.vue') },
       { path: 'chat/:id', component: () => import('../components/chat/ChatWindow.vue') },

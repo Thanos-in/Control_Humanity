@@ -289,7 +289,6 @@ export default {
   },
   methods: {
     handleDocumentClick() {
-      // agar ochiq menu bo‘lsa — yopamiz
       if (this.openMenuId) {
         this.openMenuId = null;
       }

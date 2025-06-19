@@ -121,7 +121,6 @@
         class="fixed top-[50px] left-0 h-[calc(100vh-50px)] w-56 bg-neutral-900/90 backdrop-blur-md border-r border-neutral-700 shadow-inner z-40 px-3 py-5 text-gray-200"
       >
         <nav class="flex flex-col space-y-2">
-          <!-- E‑commerce dropdown -->
           <div class="relative">
             <button
               @click="toggleProjects"
@@ -156,7 +155,7 @@
               </li>
               <li>
                 <router-link
-                  to="/projects?archived=true"
+                  to="/archivedprojects"
                   class="block px-4 py-2 text-sm text-gray-300 hover:bg-neutral-700 hover:text-white transition"
                 >
                   Архив
@@ -205,8 +204,7 @@ export default {
       showSidebar: true,
       isDropdownOpen: false,
       currentLanguage: "Ru",
-      showProjectsDropdown: false,
-      showEcomDropdown: false,
+      showProjectsDropdown: true,
       otherLinks: {
         "/mytasks": "Задачи",
         "/chat": "Чаты",
@@ -236,9 +234,6 @@ export default {
     },
     toggleProjects() {
       this.showProjectsDropdown = !this.showProjectsDropdown;
-    },
-    toggleEcom() {
-      this.showEcomDropdown = !this.showEcomDropdown;
     },
   },
   async created() {

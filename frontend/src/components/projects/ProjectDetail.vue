@@ -63,68 +63,81 @@
           </p>
         </div>
 
-    <!-- Архивирован checkbox bo'limi -->
-    <div class="flex items-center gap-3 relative mt-4">
-      <label
-        :for="`archive-cbx-${project.id}`"
-        class="text-sm font-medium text-gray-800 dark:text-gray-200"
-      >
-        Архивирован:
-      </label>
+        <!-- Архивирован checkbox bo'limi -->
+        <div class="flex items-center gap-3 relative mt-4">
+          <label
+            v-if="project.is_archived"
+            :for="`archive-cbx-${project.id}`"
+            class="text-sm font-medium text-gray-800 dark:text-gray-200"
+          >
+            Архивирован:
+          </label>
+          <label
+            v-else
+            :for="`archive-cbx-${project.id}`"
+            class="text-sm font-medium text-gray-800 dark:text-gray-200"
+          >
+            Архивировать:
+          </label>
 
-      <!-- Checkbox input -->
-      <input
-        :id="`archive-cbx-${project.id}`"
-        type="checkbox"
-        :checked="project.is_archived"
-        @change="toggleArchive"
-        class="peer absolute w-6 h-6 ml-[115px] appearance-none border-2 border-gray-400 rounded-full transition-all duration-200 cursor-pointer hover:border-green-600 focus:outline-none"
-      />
+          <!-- Checkbox input -->
+          <input
+            :id="`archive-cbx-${project.id}`"
+            type="checkbox"
+            :checked="project.is_archived"
+            @change="toggleArchive"
+            class="peer absolute w-6 h-6 ml-[115px] appearance-none border-2 border-gray-400 rounded-full transition-all duration-200 cursor-pointer hover:border-green-600 focus:outline-none"
+          />
 
-      <!-- Animatsion Label (splash) -->
-      <label
-        :for="`archive-cbx-${project.id}`"
-        class="absolute w-6 h-6 bg-none ml-[115px] rounded-full pointer-events-none [filter:url(#goo)] peer-checked:animate-splash"
-      ></label>
+          <!-- Animatsion Label (splash) -->
+          <label
+            :for="`archive-cbx-${project.id}`"
+            class="absolute w-6 h-6 bg-none ml-[115px] rounded-full pointer-events-none [filter:url(#goo)] peer-checked:animate-splash"
+          ></label>
 
-      <!-- Check icon -->
-      <svg
-        width="10"
-        height="10"
-        viewBox="0 0 15 14"
-        fill="none"
-        class="absolute top-[5px] ml-[115px] left-[7px] z-10 pointer-events-none"
-      >
-        <path
-          d="M2 8.36364L6.23077 12L13 2"
-          stroke="white"
-          stroke-width="3"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="stroke-dasharray-[19] stroke-dashoffset-[19] transition-all duration-500 peer-checked:stroke-dashoffset-0"
-        />
-      </svg>
+          <!-- Check icon -->
+          <svg
+            width="10"
+            height="10"
+            viewBox="0 0 15 14"
+            fill="none"
+            class="absolute top-[5px] ml-[115px] left-[7px] z-10 pointer-events-none"
+          >
+            <path
+              d="M2 8.36364L6.23077 12L13 2"
+              stroke="white"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="stroke-dasharray-[19] stroke-dashoffset-[19] transition-all duration-500 peer-checked:stroke-dashoffset-0"
+            />
+          </svg>
 
-      <!-- Gooey Filter (hidden) -->
-      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="hidden">
-        <defs>
-          <filter id="goo">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
-            <feColorMatrix
-              in="blur"
-              mode="matrix"
-              values="1 0 0 0 0  
+          <!-- Gooey Filter (hidden) -->
+          <svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="hidden">
+            <defs>
+              <filter id="goo">
+                <feGaussianBlur
+                  in="SourceGraphic"
+                  stdDeviation="4"
+                  result="blur"
+                />
+                <feColorMatrix
+                  in="blur"
+                  mode="matrix"
+                  values="1 0 0 0 0  
                       0 1 0 0 0  
                       0 0 1 0 0  
                       0 0 0 22 -7"
-              result="goo"
-            />
-            <feBlend in="SourceGraphic" in2="goo" />
-          </filter>
-        </defs>
-      </svg>
-    </div>
-            <!-- Status Table -->
+                  result="goo"
+                />
+                <feBlend in="SourceGraphic" in2="goo" />
+              </filter>
+            </defs>
+          </svg>
+        </div>
+
+        <!-- Status Table -->
         <div
           class="relative overflow-x-auto rounded-lg shadow scrollbar-black max-h-72 bg-white dark:bg-gray-900"
         >
@@ -277,7 +290,7 @@ export default {
       project: {},
       statuses: [],
       error: null,
-      loadingArchive: false, // ixtiyoriy: so‘rov davom etayotganini ko‘rsatish uchun
+      loadingArchive: false, 
     };
   },
   computed: {
@@ -302,12 +315,15 @@ export default {
     },
     async toggleArchive(event) {
       const newArchived = event.target.checked;
-      if (this.loadingArchive) return; 
+      if (this.loadingArchive) return;
       this.loadingArchive = true;
       try {
-        const response = await api.patch(`/projects/${this.projectId}/archive/`, {
-          is_archived: newArchived,
-        });
+        const response = await api.patch(
+          `/projects/${this.projectId}/archive/`,
+          {
+            is_archived: newArchived,
+          }
+        );
 
         this.project = response.data;
       } catch (error) {
@@ -324,7 +340,6 @@ export default {
   },
 };
 </script>
-
 
 <style scoped>
 /* No additional styles needed; using Tailwind classes */

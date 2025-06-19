@@ -21,13 +21,14 @@ class ProjectSerializer(serializers.ModelSerializer):
     )
     modules = ModuleSerializer(many=True, read_only=True)
     period = serializers.SerializerMethodField()
-
+    is_archived = serializers.BooleanField()
+    
     class Meta:
         model = Project
         fields = (
             'id', 'name', 'description',
             'director', 'manager', 'period',
-            'manager_id', 'start_date', 'modules', 'image', 'end_date'
+            'manager_id', 'start_date', 'modules', 'image', 'end_date', 'is_archived'
         )
 
     def create(self, validated_data):

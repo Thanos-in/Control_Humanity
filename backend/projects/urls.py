@@ -1,8 +1,8 @@
 from rest_framework.routers import DefaultRouter
-from .views import ProjectViewSet, ModuleViewSet  
+from .views import ProjectViewSet, ModuleViewSet, ArchivedProjectsViewSet  
 
 router = DefaultRouter()
 router.register('', ProjectViewSet, basename='project')
-router.register('/modules/', ModuleViewSet, basename='modules')
+router.register('modules', ModuleViewSet, basename='modules')
 
 urlpatterns = router.urls

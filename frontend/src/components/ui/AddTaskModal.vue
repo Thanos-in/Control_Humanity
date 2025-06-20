@@ -1,38 +1,56 @@
 <template>
-  <div v-if="visible" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-4">
-    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl w-full max-w-lg shadow-xl">
-      <h2 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white">
-        Добавить задачу в
-        <span class="text-blue-600">
-          {{ module ? `модуль "${module.name}"` : `проект "${project.name}"` }}
-        </span>
-      </h2>
-
-      <form @submit.prevent="submitTask">
-        <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Название</label>
-          <input v-model="form.title" required class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white" />
+  <div
+    v-if="visible"
+    class="fixed inset-0 flex items-center justify-center z-50 bg-neutral-900/90 backdrop-blur-md border border-neutral-700 text-gray-200"
+  >
+    <div
+      class="w-full max-w-lg p-8 rounded-xl shadow-2xl bg-neutral-900/90 backdrop-blur-md border border-neutral-700 text-gray-200"
+    >
+      <h3 class="text-2xl font-bold mb-6">Создать новую задачу</h3>
+      <!-- <form @submit.prevent="handleCreateTask" class="space-y-5"> -->
+        <!-- Task Title -->
+        <div>
+          <label class="block mb-1 font-medium text-gray-200" for="title">
+            Название задачи
+          </label>
+          <input
+            v-model="newTask.title"
+            id="title"
+            type="text"
+            placeholder="Введите название"
+            class="w-full p-3 bg-white/10 border border-white/30 placeholder-white/60 text-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 text-base"
+            required
+          />
         </div>
 
-        <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Описание</label>
-          <textarea v-model="form.description" rows="3" class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white"></textarea>
+        <!-- Description -->
+        <div>
+          <label class="block mb-1 font-medium text-gray-200" for="description">
+            Описание
+          </label>
+          <textarea
+            v-model="newTask.description"
+            id="description"
+            rows="3"
+            placeholder="Опишите задачу"
+            class="w-full p-3 bg-white/10 border border-white/30 placeholder-white/60 text-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 text-base resize-none"
+          ></textarea>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Начало</label>
-            <input v-model="form.start_date" type="date" class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Окончание</label>
-            <input v-model="form.end_date" type="date" class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white" />
-          </div>
-        </div>
-
-        <div class="mt-4">
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Ответственный</label>
-          <select v-model="form.assignee" class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white">
+        <!-- Assign To -->
+        <div>
+          <label
+            class="block mb-1 font-medium text-gray-200"
+            for="assigned_to_id"
+          >
+            Назначить
+          </label>
+          <select
+            v-model="newTask.assigned_to_id"
+            id="assigned_to_id"
+            class="w-full p-3 bg-white/10 border border-white/30 placeholder-white/60 text-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
+            required
+          >
             <option disabled value="">Выберите пользователя</option>
             <option v-for="user in users" :key="user.id" :value="user.id">
               {{ user.username }}
@@ -40,57 +58,120 @@
           </select>
         </div>
 
-        <div class="mt-6 flex justify-end gap-2">
-          <button type="button" @click="$emit('close')" class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 text-sm">
-            Отмена
+        <!-- Due Date -->
+        <div>
+          <label class="block mb-1 font-medium text-gray-200" for="due_date">
+            Срок окончания
+          </label>
+          <input
+            v-model="newTask.due_date"
+            id="due_date"
+            type="datetime-local"
+            class="w-full p-3 bg-white/10 border border-white/30 placeholder-white/60 text-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 text-base"
+          />
+        </div>
+
+        <!-- Color Picker -->
+        <div class="flex items-center space-x-3">
+          <label class="font-medium text-gray-200"> Цвет задачи: </label>
+          <input
+            type="color"
+            v-model="newTask.color"
+            class="w-8 h-8 rounded border border-black/30 p-0 appearance-none"
+          />
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex justify-end space-x-4 mt-6">
+          <button
+            type="button"
+            @click="close"
+            class="px-5 py-2 font-medium text-gray-200/80 hover:text-gray-200"
+          >
+            Отменить
           </button>
-          <button type="submit" class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 text-sm">
-            Сохранить
+          <button
+            @click="handleCreateTask"
+            class="px-6 py-2 bg-gray-700/50 text-gray-200 font-semibold rounded-md hover:bg-gray-700/70 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-opacity-50"
+          >
+            Создать
           </button>
         </div>
-      </form>
+      <!-- </form> -->
     </div>
   </div>
 </template>
 
 <script>
+
 export default {
+  name: "TaskFormModal",
   props: {
-    visible: Boolean,
-    project: Object,
-    module: Object,
-    users: Array,
+    visible: {
+      type: Boolean,
+      default: false,
+    },
+    projectId: {
+      type: Number,
+      required: true,
+    },
+    moduleId: {
+      type: Number,
+      default: null,
+    },
+    users: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
-      form: {
-        title: '',
-        description: '',
-        start_date: '',
-        end_date: '',
-        assignee: '',
+      newTask: {
+        title: "",
+        description: "",
+        assigned_to_id: null,
+        due_date: "",
+        status_id: "39",
+        color: "#FFFFFF",
       },
     };
   },
   methods: {
-    submitTask() {
-      const payload = {
-        ...this.form,
-        project: this.project.id,
-        module: this.module ? this.module.id : null,
-      };
-      this.$emit('submit', payload);
+    close() {
+      this.$emit("close");
       this.resetForm();
     },
     resetForm() {
-      this.form = {
-        title: '',
-        description: '',
-        start_date: '',
-        end_date: '',
-        assignee: '',
+      this.newTask = {
+        title: "",
+        description: "",
+        assigned_to_id: null,
+        status_id: "39",
+        due_date: "",
+        color: "#FFFFFF",
       };
+    },
+    async handleCreateTask() {
+      const payload = {
+        title: this.newTask.title,
+        description: this.newTask.description,
+        assigned_to_id: this.newTask.assigned_to_id,
+        due_date: this.newTask.due_date
+          ? new Date(this.newTask.due_date).toISOString()
+          : null,
+        color: this.newTask.color,
+        project_id: this.projectId,
+        status_id: "39",
+        module_id: this.moduleId,
+      };
+      console.log("Yuborilayotgan payload:", payload);
+      this.$emit("save", payload); 
+      this.close();
     },
   },
 };
 </script>
+
+<style scoped>
+/* Add any specific styles here */
+</style>

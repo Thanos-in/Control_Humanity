@@ -5,7 +5,6 @@ import store from './store'
 import api, { setupInterceptors } from '@/utils/axios'
 import './assets/tailwind.css'
 
-
 const app = createApp(App)
 app.use(store)
 app.use(router)

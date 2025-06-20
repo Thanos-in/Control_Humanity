@@ -11,6 +11,7 @@
     "canvas-confetti": "^1.9.3",
     "chart.js": "^4.5.0",
     "gsap": "^3.13.0",
+    "jwt-decode": "^4.0.0",
     "vue": "^3.0.0",
     "vue-chartjs": "^5.3.2",
     "vue-router": "^4.0.0",

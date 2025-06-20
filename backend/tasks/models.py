@@ -53,9 +53,9 @@ class Task(models.Model):
     data_input = models.DateTimeField(default=timezone.now)
     due_date = models.DateTimeField(null=True, blank=True)
     color = models.CharField(max_length=7, default='#FFFFFF')
-    is_archived   = models.BooleanField(default=False)
-    module        = models.ForeignKey(Module, on_delete=models.CASCADE,
-                                      related_name='tasks', null=True, blank=True)
+    is_archived = models.BooleanField(default=False)
+    module = models.ForeignKey(Module, on_delete=models.CASCADE,
+                                related_name='tasks', null=True, blank=True)
 
     def __str__(self):
         return f"{self.title} ({self.project.name})"

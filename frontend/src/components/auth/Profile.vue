@@ -148,7 +148,7 @@ export default {
   async created() {
     try {
       const id = this.$route.params.userId
-      const response = await api.get(`/auth/profiles/${id}/`)
+      const response = await api.get(`/auth/users/${id}/`)
       this.profile = response.data
     } catch (e) {
       this.error = 'Failed to load profile.'
@@ -159,7 +159,7 @@ export default {
       this.error = ''
       this.success = ''
       try {
-        await api.patch(`/auth/profiles/${this.profile.id}/`, {
+        await api.patch(`/auth/users/${this.profile.id}/`, {
           username: this.profile.username,
           email: this.profile.email,
           first_name: this.profile.first_name,
@@ -174,7 +174,7 @@ export default {
       this.error = ''
       this.success = ''
       try {
-        await api.patch(`/auth/profiles/${this.profile.id}/`, {
+        await api.patch(`/auth/users/${this.profile.id}/`, {
           role: this.profile.role
         })
         this.success = 'Role updated successfully.'

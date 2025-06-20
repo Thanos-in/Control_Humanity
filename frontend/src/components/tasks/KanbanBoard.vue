@@ -341,7 +341,7 @@ export default {
     },
     async fetchUsers() {
       try {
-        const response = await api.get("/auth/users/users/");
+        const response = await api.get("/auth/users/");
         this.users = response.data;
       } catch (err) {
         console.error("Failed to fetch users:", err);

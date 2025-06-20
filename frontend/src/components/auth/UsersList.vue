@@ -93,7 +93,7 @@ export default {
     const fetchUsers = async () => {
       loading.value = true;
       try {
-        const response = await api.get('/auth/users/allusers/');
+        const response = await api.get('/auth/users/');
         users.value = response.data;
       } catch (err) {
         error.value = 'Failed to load users.';
@@ -120,7 +120,7 @@ export default {
     const deleteUser = async (id) => {
       if (!confirm('Are you sure you want to delete this user?')) return;
       try {
-        await api.delete(`/auth/profiles/${id}/`);
+        await api.delete(`/auth/users/${id}/`);
         users.value = users.value.filter((u) => u.id !== id);
       } catch {
         alert('Delete failed.');

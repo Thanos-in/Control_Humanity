@@ -1,5 +1,5 @@
 <template>
- <div class="grid grid-cols-[300px_1fr] h-full p-4 gap-6">
+  <div class="grid grid-cols-[300px_1fr] h-full p-4 gap-6">
     <!-- Sidebar -->
     <aside class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md">
       <img
@@ -26,7 +26,6 @@
           Создать доску
         </button>
         <router-link
-          :to="`/tasks/`"
           class="text-white bg-purple-600 hover:bg-purple-700 focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 shadow-md"
         >
           Kanban Board
@@ -263,7 +262,7 @@
                   </tr>
                 </tbody>
               </table>
-            </div> 
+            </div>
           </template>
 
           <template v-else>
@@ -275,7 +274,7 @@
       </div>
     </section>
   </div>
- <!-- <KanbanBoard :projectId="projectId" /> -->
+  <KanbanBoard :projectId="projectId" />
 </template>
 
 <script>
@@ -291,7 +290,7 @@ export default {
       project: {},
       statuses: [],
       error: null,
-      loadingArchive: false, 
+      loadingArchive: false,
     };
   },
   computed: {

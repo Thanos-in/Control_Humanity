@@ -48,9 +48,7 @@ class ArchivedProjectsViewSet(viewsets.ModelViewSet):
 class ModuleViewSet(viewsets.ModelViewSet):
     queryset = Module.objects.all()
     serializer_class = ModuleSerializer
-    permission_classes = [permissions.IsAuthenticated()]
+    permission_classes = [permissions.IsAuthenticated]
 
-    # При желании можно переопределить методы list/create/update/destroy
-    # для кастомной логики. Например:
-    # def perform_create(self, serializer):
-    #     serializer.save(created_by=self.request.user)
+    def perform_create(self, serializer):
+        serializer.save() # created_by=self.request.user

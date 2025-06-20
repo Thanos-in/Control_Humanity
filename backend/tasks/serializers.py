@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import Task, Status, SimpleTask
 from accounts.serializers import UserSerializer
 from django.contrib.auth import get_user_model
-from projects.models import Project
+from projects.models import Project, Module
 
 User = get_user_model()
 
@@ -13,28 +13,38 @@ class StatusSerializer(serializers.ModelSerializer):
 
 class TaskSerializer(serializers.ModelSerializer):
     # Read-only nested serializers
-    assigned_to   = UserSerializer(read_only=True)
-    status        = StatusSerializer(read_only=True)
-    project       = serializers.PrimaryKeyRelatedField(read_only=True)
+    assigned_to = UserSerializer(read_only=True)
+    status = StatusSerializer(read_only=True)
+    project = serializers.PrimaryKeyRelatedField(read_only=True)
     created_by = UserSerializer(read_only=True)
-
+    
     assigned_to_id = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.filter(role='employee'),
         source='assigned_to',
         write_only=True,
         required=False
     )
-    status_id      = serializers.PrimaryKeyRelatedField(
+    status_id = serializers.PrimaryKeyRelatedField(
         queryset=Status.objects.all(),
         source='status',
         write_only=True
     )
-    project_id     = serializers.PrimaryKeyRelatedField(
+    project_id = serializers.PrimaryKeyRelatedField(
          queryset=Project.objects.all(),
          source='project',
          write_only=True
      )
 
+    module_id = serializers.PrimaryKeyRelatedField(
+            queryset=Module.objects.all(),
+            source='module',
+            allow_null=True,
+            required=False,
+            write_only=True,
+        )
+   
+    module = serializers.IntegerField(source='module.id', read_only=True, allow_null=True)
+    
     class Meta:
         model = Task
         fields = (
@@ -45,9 +55,10 @@ class TaskSerializer(serializers.ModelSerializer):
             'created_by',   'created_at',
             'updated_at',   'due_date',
             'color',        'data_input',
+            'module',       'module_id',
         )
         read_only_fields = ('created_by',)
-
+        
     def validate_assigned_to(self, user):
 
         if user and user.role != 'employee':

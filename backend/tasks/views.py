@@ -1,9 +1,14 @@
-from rest_framework import viewsets, permissions, filters
+from rest_framework.response import Response
+from rest_framework import viewsets, permissions, filters, status
 from .models import Task, Status, SimpleTask
 from .serializers import TaskSerializer, StatusSerializer, SimpleTaskSerializer
 from .permissions import IsManagerOrDirector, IsEmployeeOrManager
+from accounts.models import User
 from django.db.models import Q
 from tasks.utils import send_telegram_message
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny 
+
 
 class StatusViewSet(viewsets.ModelViewSet):
     queryset = Status.objects.all()
@@ -67,21 +72,23 @@ class TaskViewSet(viewsets.ModelViewSet):
     
     def perform_create(self, serializer):
         due_date = self.request.data.get('due_date')
-        save_kwargs = {'created_by': self.request.user}
+        save_kwargs = {'created_by': self.request.user,
+                       'status': Status.objects.get(pk=39)
+                       }
         if due_date is not None:
             save_kwargs['due_date'] = due_date
 
         task = serializer.save(**save_kwargs)
 
         user = task.assigned_to
-        print(task.assigned_to)
+   
         if user and getattr(user, 'telegram_id', None):
             text = (
-                f"Salom {user.first_name}!\n"
-                f"Sizga yangi vazifa berildi:\n"
-                f"• Nomi: {task.title}\n"
-                f"• Ta’rif: {task.description}\n"
-                f"• Muddati: {task.due_date}\n"
+                f"Привет {user.first_name}!\n"
+                f"Вам дали новое задание:\n"
+                f"• Имя: {task.title}\n"
+                f"• Определение: {task.description}\n"
+                f"• Продолжительность: {task.due_date}\n"
             )
             send_telegram_message(user.telegram_id, text)
 
@@ -116,3 +123,21 @@ class SimpleTaskViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
+
+class TelegramTaskView(APIView):
+    permission_classes = [AllowAny]
+    
+    def get(self, request):
+        telegram_id = request.query_params.get('telegram_id')
+        
+        if not telegram_id:
+            return Response({"error": "telegram_id is required"}, status=400)
+
+        try:
+            user = User.objects.get(telegram_id=telegram_id)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
+
+        tasks = Task.objects.filter(assigned_to=user)
+        serializer = TaskSerializer(tasks, many=True)
+        return Response(serializer.data)

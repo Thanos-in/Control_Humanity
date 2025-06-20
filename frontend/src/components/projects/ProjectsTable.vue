@@ -1,18 +1,13 @@
 <template>
-  <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-    <!-- Add Module and Task Modals -->
-    <AddModuleModal
-      v-if="showAddModuleModal"
-      :project-id="selectedProjectForModule"
-      @close="closeAddModuleModal"
-      @saved="reloadProjects"
-    />
+  <div class="relative overflow-x-auto scrollbar-black shadow-md sm:rounded-lg">
+    <!-- Add Task Modals -->
     <AddTaskModal
-      v-if="showAddTaskModal"
-      :project-id="selectedProjectForTask.project"
-      :module-id="selectedProjectForTask.module"
+      :visible="showAddTaskModal"
+      :project-id="selectedTaskContext.projectId"
+      :module-id="selectedTaskContext.moduleId"
+      :users="users"
       @close="closeAddTaskModal"
-      @saved="reloadProjects"
+      @save="handleTaskCreate"
     />
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
       <thead
@@ -92,7 +87,7 @@
                   Просмотр
                 </li>
                 <li
-                  @click="openAddModuleModal(proj.id)"
+                  @click="startAddModuleInline(proj.id)"
                   class="px-4 py-2 hover:bg-gray-900 rounded-xl cursor-pointer text-left"
                 >
                   Добавить модуль
@@ -116,6 +111,33 @@
                   Удалить
                 </li>
               </ul>
+            </td>
+          </tr>
+          
+          <!-- New row -->
+          <tr v-if="addingModuleProjectId === proj.id">
+            <td class="px-6 py-4 bg-gray-700 font-medium text-gray-900 whitespace-nowrap dark:text-white"></td>
+            <td colspan="6" class="px-6 py-4 bg-gray-700 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+              <div class="flex items-center space-x-2">
+                <input
+                  v-model="newModuleName"
+                  type="text"
+                  placeholder="Название модуля"
+                  class="flex-1 border rounded px-3 py-1"
+                />
+                <button
+                  @click="saveModuleInline(proj.id)"
+                  class="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded"
+                >
+                  Сохранить
+                </button>
+                <button
+                  @click="cancelAddModuleInline"
+                  class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded"
+                >
+                  Отмена
+                </button>
+              </div>
             </td>
           </tr>
 
@@ -189,6 +211,62 @@
                   </ul>
                 </td>
               </tr>
+
+              <!-- Tasks without modules 
+              <tr
+                v-for="task in getUnlinkedTasks(proj)"
+                :key="task.id"
+                class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+              >
+                <td class="px-6 py-4"></td>
+                <td class="px-6 py-4">📌 {{ task.title }}</td>
+                <td class="px-6 py-4">{{ task.assigned_to?.username || "—" }}</td>
+                <td class="px-6 py-4">{{ formatPeriod(task.created_at, task.due_date) }}</td>
+                <td class="px-6 py-4">
+                  <span
+                    :class="{
+                      'text-green-600': task.status.name === 'done',
+                      'text-yellow-600': task.status.name === 'in_progress',
+                      'text-red-600': task.status.name === 'todo',
+                    }"
+                  >
+                    {{ statusLabel(task.status.name) }}
+                  </span>
+                </td>
+                <td class="px-6 py-4">—</td>
+                <td class="relative px-6 py-4 text-right">
+                  <button
+                    @click.stop="toggleMenu(`task-${task.id}`)"
+                    class="focus:outline-none"
+                  >
+                    •••
+                  </button>
+                  <ul
+                    v-if="openMenuId === `task-${task.id}`"
+                    class="absolute right-0 mt-2 w-40 bg-gray-800 text-white rounded-xl border border-gray-700 shadow-lg z-10"
+                  >
+                    <li
+                      @click="goToTaskForm(task.id)"
+                      class="px-4 py-2 hover:bg-gray-900 rounded-xl cursor-pointer text-left"
+                    >
+                      Просмотреть
+                    </li>
+                    <li
+                      @click="editTask(task.id)"
+                      class="px-4 py-2 hover:bg-gray-900 rounded-xl cursor-pointer text-left"
+                    >
+                      Изменить
+                    </li>
+                    <li
+                      @click="confirmDelete('task', task.id)"
+                      class="px-4 py-2 hover:bg-gray-900 rounded-xl cursor-pointer text-left text-red-400 text-sm"
+                    >
+                      Удалить
+                    </li>
+                  </ul>
+                </td>
+              </tr> -->
+
               <!-- Tasks -->
               <template v-if="expandedModules.includes(mod.id)">
                 <tr
@@ -265,33 +343,127 @@
 
 <script>
 import api from "@/utils/axios";
-import AddModuleModal from "@/components/ui/AddModuleModal.vue";
 import AddTaskModal from "@/components/ui/AddTaskModal.vue";
 import ProjectProgressChart from "@/components/ui/ProjectProgressChart.vue";
 
 export default {
-  components: { AddModuleModal, AddTaskModal, ProjectProgressChart },
+  components: { AddTaskModal, ProjectProgressChart },
   data() {
     return {
+      users: [],
       openMenuId: null,
       expandedProjects: [],
       expandedModules: [],
       projects: [],
-      showAddModuleModal: false,
+      addingModuleProjectId: null,
+      editingModuleId: null,
+      newModuleName: "",
+      updatedName: "",
       showAddTaskModal: false,
-      selectedProjectForChart: null,
       selectedProjectForModule: null,
-      selectedProjectForTask: { project: null, module: null },
+      selectedTaskContext: { projectId: null, moduleId: null },
+      selectedProjectForChart: null,
     };
+  },
+  computed: {
+    currentTaskProject() {
+      return (
+        this.projects.find(
+          (p) => p.id === this.selectedTaskContext.projectId
+        ) || {}
+      );
+    },
+    currentTaskModule() {
+      const proj = this.currentTaskProject;
+      return (
+        proj.modules?.find((m) => m.id === this.selectedTaskContext.moduleId) ||
+        null
+      );
+    },
   },
   async created() {
     await this.reloadProjects();
+    await this.loadUsers();
   },
   methods: {
     handleDocumentClick() {
       if (this.openMenuId) {
         this.openMenuId = null;
       }
+    },
+
+    async saveModuleInline(projectId) {
+      if (!this.newModuleName.trim()) return;
+      try {
+          const response = await api.post(`/projects/modules/`, {
+            name: this.newModuleName,
+            project: projectId,
+          });
+          console.log("✅ Yaratildi:", response.data);
+          await this.reloadProjects();
+
+        if (!this.expandedProjects.includes(projectId)) {
+          this.expandedProjects.push(projectId);
+        }
+
+        this.cancelAddModuleInline();
+      } catch (e) {
+        console.error("Module yaratish xatosi:", e);
+      }
+    },
+
+    async updateModuleInline(moduleId, projectId) {
+      if (!this.updatedName.trim()) return;
+      try {
+        await api.patch(`/projects/modules/${moduleId}/`, {
+          name: this.updatedName,
+        });
+        await this.reloadProjects();
+
+        if (!this.expandedProjects.includes(projectId)) {
+          this.expandedProjects.push(projectId);
+        }
+
+        this.cancelAddModuleInline();
+      } catch (e) {
+        console.error("Module yangilash xatosi:", e);
+      }
+    },
+
+    async deleteModuleInline(moduleId, projectId) {
+      try {
+        await api.delete(`/projects/modules/${moduleId}/`);
+        await this.reloadProjects();
+
+        if (!this.expandedProjects.includes(projectId)) {
+          this.expandedProjects.push(projectId);
+        }
+
+        this.cancelAddModuleInline();
+      } catch (e) {
+        console.error("Module o'chirish xatosi:", e);
+      }
+    },
+
+    cancelAddModuleInline() {
+      this.addingModuleProjectId = null;
+      this.newModuleName = "";
+      this.updatedName = "";
+    },
+
+    startAddModuleInline(projectId) {
+      this.addingModuleProjectId = projectId;
+      this.newModuleName = "";
+    },
+
+    startEditModuleInline(module) {
+      this.editingModuleId = module.id;
+      this.updatedName = module.name;
+    },
+
+    cancelEditModuleInline() {
+      this.editingModuleId = null;
+      this.updatedName = "";
     },
     toggleMenu(id) {
       this.openMenuId = this.openMenuId === id ? null : id;
@@ -322,16 +494,8 @@ export default {
         ? this.expandedModules.push(id)
         : this.expandedModules.splice(i, 1);
     },
-    openAddModuleModal(projectId) {
-      this.selectedProjectForModule = projectId;
-      this.showAddModuleModal = true;
-    },
     selectProjectForChart(project) {
       this.selectedProjectForChart = project;
-    },
-    closeAddModuleModal() {
-      this.showAddModuleModal = false;
-      this.selectedProjectForModule = null;
     },
     openAddTaskModal(projectId, moduleId) {
       this.selectedProjectForTask = { project: projectId, module: moduleId };
@@ -360,7 +524,39 @@ export default {
     },
     getUnlinkedTasks(proj) {
       if (!proj.tasks) return [];
-      return proj.tasks.filter(task => !task.module_id);
+      return proj.tasks.filter(
+        (task) => task.module_id === null || task.module_id === undefined
+      );
+    },
+
+    async loadUsers() {
+      try {
+        const { data } = await api.get("/auth/users/");
+        this.users = data;
+      } catch (e) {
+        console.error("Пользователи не загружены", e);
+      }
+    },
+
+    openAddTaskModal(projectId, moduleId) {
+      this.selectedTaskContext = { projectId, moduleId };
+      this.showAddTaskModal = true;
+    },
+    closeAddTaskModal() {
+      this.showAddTaskModal = false;
+      this.selectedTaskContext = { projectId: null, moduleId: null };
+    },
+    async handleTaskCreate(payload) {
+      try {
+        console.log("Qabul qilingan payload:", payload);
+        const response = await api.post("/tasks/", payload);
+        console.log("Server javobi:", response.data);
+        this.reloadProjects();
+
+        // this.closeAddTaskModal();
+      } catch (e) {
+        console.error("Task yaratishda xatolik:", e.response?.data || e);
+      }
     },
   },
   mounted() {

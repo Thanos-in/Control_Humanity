@@ -182,7 +182,7 @@
       <!-- Content -->
       <main
         :class="[
-          'flex-1 overflow-auto p-4 transition-all',
+          'flex-1 overflow-auto scrollbar-black p-4 transition-all',
           showSidebar ? 'ml-56' : 'ml-0',
         ]"
       >
@@ -252,7 +252,7 @@ export default {
   async created() {
     try {
       const id = this.$store.state.auth.user.id;
-      const response = await api.get(`/auth/profiles/${id}/`);
+      const response = await api.get(`/auth/users/${id}/`);
       this.profile = response.data;
     } catch (e) {
       this.error = "Failed to load profile.";

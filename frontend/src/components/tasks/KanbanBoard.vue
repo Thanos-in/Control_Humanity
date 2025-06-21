@@ -10,20 +10,18 @@
     >
       <template #item="{ element: status }">
         <section
-          class="mt-3 w-80 min-h-20 rounded-xl p-4 shadow-md flex flex-col self-start"
-          :style="{ backgroundColor: status.color || '#ffffff' }"
+          class="mt-3 w-80 min-h-20 rounded-xl p-4 bg-gray-800 shadow-md flex flex-col self-start"
           :data-status-id="status.id"
-        >
+        > <!-- :style="{ backgroundColor: status.color || '#ffffff' }" -->
           <!-- Header -->
           <header class="flex justify-between items-center mb-3">
             <h2
-              class="text-base font-semibold truncate"
-              :style="{ color: getTextColor(status.color) }"
-            >
+              class=" text-base text-white font-semibold truncate"
+            > <!-- :style="{ color: getTextColor(status.color) }" -->
               {{ status.name }}
             </h2>
 
-            <!-- "..." menyusi -->
+            <!-- "..." menyu -->
             <div class="relative">
               <button
                 @click="toggleDropdown(status.id)"
@@ -56,20 +54,22 @@
                       d="M6 18L18 6M6 6l12 12"
                     />
                   </svg>
-                  Удалить
+                  Удалить 
                 </button>
+                <p v-for="task in tasks">{{}}</p>
               </div>
             </div>
           </header>
 
-          <!-- Tasklar -->
+          <!-- Tasks -->
           <draggable
             :list="tasksByStatus(status.id)"
             group="tasks"
-            @end="(evt) => onTaskReorder(evt, status.id)"
-            class="flex-1 space-y-3 overflow-y-auto"
+            @start="onDragStart"
+            @end="(evt) => onDragEnd(evt, status.id)"
+            class="flex-1 space-y-3 overflow-y-auto transition-all duration-300 ease-in-out"
             item-key="id"
-            :animation="250"
+            :animation="200"
           >
             <template #item="{ element: task }">
               <div
@@ -84,17 +84,11 @@
                   :text-color="getTextColor(task.color)"
                 />
 
-                <div
-                  v-if="task.due_date"
-                  class="mt-2 text-xs text-gray-200 bg-black bg-opacity-20 rounded-md px-2 py-1 inline-block"
-                >
-                  Срок: {{ formatDate(task.due_date) }}
-                </div>
               </div>
             </template>
           </draggable>
 
-          <!-- + Добавить карточку -->
+          <!-- Добавить карточку -->
           <button
           @click="openNewTaskForm(status.id)"
           class="mt-3 w-full flex items-center px-3 py-2 text-sm rounded-lg bg-transparent hover:shadow-sm hover:scale-[1.01] hover:backdrop-brightness-105 transition-all duration-200 ease-in-out cursor-pointer"
@@ -311,11 +305,11 @@ export default {
     ...mapState("tasks", ["tasks", "statuses"]),
     tasksByStatus() {
       return (statusId) =>
-        this.tasks.filter(
-          (task) =>
-            (task.status.id || task.status) === statusId &&
-            task.project.id === this.projectId
-        );
+        this.tasks.filter((task) => {
+          const taskStatusId = task.status?.id || task.status;
+          const taskProjectId = task.project?.id || task.project;
+          return taskStatusId === statusId && taskProjectId === this.projectId;
+        });
     },
   },
   methods: {
@@ -367,6 +361,26 @@ export default {
         console.error("Failed to reorder statuses:", err);
       }
     },
+    onDragStart(evt) {
+      // Drag boshlanganda bevosita dragged elementga rotate beramiz
+      const el = evt.item;
+      if (el) {
+        // Smooth anim bo‘lishi uchun transition o‘rnatamiz.
+        // Agar Tailwind orqali `transition-transform duration-200` qo‘yilgan bo‘lsa,
+        // JS orqali ham o‘rnatish muammo bo‘lmaydi, lekin bir marta o‘rnatish yetarli.
+        el.style.transition = 'transform 0.2s';
+        el.style.transform = 'rotate(5deg)';
+      }
+    },
+    onDragEnd(evt, oldStatusId) {
+          const el = evt.item;
+          if (el) {
+            el.style.transform = '';
+            // el.style.transition = '';
+          }
+          // Mavjud logikani chaqirish: status o‘zgarishini serverga yuborish va qayta fetch
+          this.onTaskReorder(evt, oldStatusId);
+        },
     async onTaskReorder(evt, oldStatusId) {
       const task = evt.item.__draggable_context.element;
       const newStatusId = Number(

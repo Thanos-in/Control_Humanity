@@ -8,9 +8,11 @@ from tasks.serializers import TaskSerializer
 User = get_user_model()
 
 class ModuleSerializer(serializers.ModelSerializer):
+    tasks = TaskSerializer(many=True, read_only=True)
+    
     class Meta:
         model = Module
-        fields = ['id', 'name', 'project']
+        fields = ['id', 'name', 'project', 'tasks']
 
 
 class ProjectSerializer(serializers.ModelSerializer):

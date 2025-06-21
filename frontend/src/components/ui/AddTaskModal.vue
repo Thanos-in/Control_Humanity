@@ -73,11 +73,11 @@
 
         <!-- Color Picker -->
         <div class="flex items-center space-x-3">
-          <label class="font-medium text-gray-200"> Цвет задачи: </label>
+          <label class="mt-5 font-medium text-gray-200"> Метка: </label>
           <input
             type="color"
             v-model="newTask.color"
-            class="w-8 h-8 rounded border border-black/30 p-0 appearance-none"
+            class="mt-5 w-8 h-8 rounded border border-black/30 p-0 appearance-none"
           />
         </div>
 
@@ -146,8 +146,8 @@ export default {
         title: "",
         description: "",
         assigned_to_id: null,
-        status_id: "39",
         due_date: "",
+        status_id: "39",
         color: "#FFFFFF",
       };
     },

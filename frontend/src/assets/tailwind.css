@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .drag-chosen {
+      transform: rotate3d(1, 1, 0, 5deg);
+      transition: transform 0.2s ease-in-out;
+      /* box-shadow: 0 4px 8px rgba(0,0,0,0.15); */
+    }
+
+    .drag-ghost {
+      transform: rotate3d(1, 1, 0, 5deg);
+      opacity: 0.8;
+    }
+  }
+
+  .rotate-5deg {
+    transform: rotate(5deg);
+  }

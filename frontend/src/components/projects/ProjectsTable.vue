@@ -113,18 +113,24 @@
               </ul>
             </td>
           </tr>
-          
+
           <!-- New row -->
           <tr v-if="addingModuleProjectId === proj.id">
-            <td class="px-6 py-4 bg-gray-700 font-medium text-gray-900 whitespace-nowrap dark:text-white"></td>
-            <td colspan="6" class="px-6 py-4 bg-gray-700 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+            <td
+              class="px-6 py-4 bg-gray-700 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+            ></td>
+            <td
+              colspan="6"
+              class="px-6 py-4 bg-gray-700 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+            >
               <div class="flex items-center space-x-2">
                 <input
                   v-model="newModuleName"
                   type="text"
                   placeholder="Название модуля"
-                  class="flex-1 border rounded px-3 py-1"
+                  class="flex border text-black rounded px-3 py-1"
                 />
+                <svg class="flex-1 h-1"></svg>
                 <button
                   @click="saveModuleInline(proj.id)"
                   class="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded"
@@ -212,61 +218,6 @@
                 </td>
               </tr>
 
-              <!-- Tasks without modules 
-              <tr
-                v-for="task in getUnlinkedTasks(proj)"
-                :key="task.id"
-                class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-              >
-                <td class="px-6 py-4"></td>
-                <td class="px-6 py-4">📌 {{ task.title }}</td>
-                <td class="px-6 py-4">{{ task.assigned_to?.username || "—" }}</td>
-                <td class="px-6 py-4">{{ formatPeriod(task.created_at, task.due_date) }}</td>
-                <td class="px-6 py-4">
-                  <span
-                    :class="{
-                      'text-green-600': task.status.name === 'done',
-                      'text-yellow-600': task.status.name === 'in_progress',
-                      'text-red-600': task.status.name === 'todo',
-                    }"
-                  >
-                    {{ statusLabel(task.status.name) }}
-                  </span>
-                </td>
-                <td class="px-6 py-4">—</td>
-                <td class="relative px-6 py-4 text-right">
-                  <button
-                    @click.stop="toggleMenu(`task-${task.id}`)"
-                    class="focus:outline-none"
-                  >
-                    •••
-                  </button>
-                  <ul
-                    v-if="openMenuId === `task-${task.id}`"
-                    class="absolute right-0 mt-2 w-40 bg-gray-800 text-white rounded-xl border border-gray-700 shadow-lg z-10"
-                  >
-                    <li
-                      @click="goToTaskForm(task.id)"
-                      class="px-4 py-2 hover:bg-gray-900 rounded-xl cursor-pointer text-left"
-                    >
-                      Просмотреть
-                    </li>
-                    <li
-                      @click="editTask(task.id)"
-                      class="px-4 py-2 hover:bg-gray-900 rounded-xl cursor-pointer text-left"
-                    >
-                      Изменить
-                    </li>
-                    <li
-                      @click="confirmDelete('task', task.id)"
-                      class="px-4 py-2 hover:bg-gray-900 rounded-xl cursor-pointer text-left text-red-400 text-sm"
-                    >
-                      Удалить
-                    </li>
-                  </ul>
-                </td>
-              </tr> -->
-
               <!-- Tasks -->
               <template v-if="expandedModules.includes(mod.id)">
                 <tr
@@ -320,13 +271,70 @@
                         @click="confirmDelete('task', task.id)"
                         class="px-4 py-2 hover:bg-gray-900 rounded-xl cursor-pointer text-left text-red-400 text-sm"
                       >
-                        Удалить
+                        Удалить{{ proj.tasks }}
                       </li>
                     </ul>
                   </td>
                 </tr>
               </template>
             </template>
+
+            <!-- Tasks without modules -->
+            <tr
+              v-for="task in getUnlinkedTasks(proj)"
+              :key="task.id"
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+            >
+              <td class="px-6 py-4"></td>
+              <td class="px-6 py-4">📌 {{ task.title }}{{ task.module }}</td>
+              <td class="px-6 py-4">{{ task.assigned_to?.username || "—" }}</td>
+              <td class="px-6 py-4">
+                {{ formatPeriod(task.created_at, task.due_date) }}
+              </td>
+              <td class="px-6 py-4">
+                <span
+                  :class="{
+                    'text-green-600': task.status.name === 'done',
+                    'text-yellow-600': task.status.name === 'in_progress',
+                    'text-red-600': task.status.name === 'todo',
+                  }"
+                >
+                  {{ statusLabel(task.status.name) }}
+                </span>
+              </td>
+              <td class="px-6 py-4">—</td>
+              <td class="relative px-6 py-4 text-right">
+                <button
+                  @click.stop="toggleMenu(`task-${task.id}`)"
+                  class="focus:outline-none"
+                >
+                  •••
+                </button>
+                <ul
+                  v-if="openMenuId === `task-${task.id}`"
+                  class="absolute right-0 mt-2 w-40 bg-gray-800 text-white rounded-xl border border-gray-700 shadow-lg z-10"
+                >
+                  <li
+                    @click="goToTaskForm(task.id)"
+                    class="px-4 py-2 hover:bg-gray-900 rounded-xl cursor-pointer text-left"
+                  >
+                    Просмотреть
+                  </li>
+                  <li
+                    @click="editTask(task.id)"
+                    class="px-4 py-2 hover:bg-gray-900 rounded-xl cursor-pointer text-left"
+                  >
+                    Изменить
+                  </li>
+                  <li
+                    @click="confirmDelete('task', task.id)"
+                    class="px-4 py-2 hover:bg-gray-900 rounded-xl cursor-pointer text-left text-red-400 text-sm"
+                  >
+                    Удалить
+                  </li>
+                </ul>
+              </td>
+            </tr>
           </template>
         </template>
       </tbody>
@@ -363,6 +371,7 @@ export default {
       selectedProjectForModule: null,
       selectedTaskContext: { projectId: null, moduleId: null },
       selectedProjectForChart: null,
+      selectedProjectForTask: { project: null, module: null },
     };
   },
   computed: {
@@ -395,12 +404,12 @@ export default {
     async saveModuleInline(projectId) {
       if (!this.newModuleName.trim()) return;
       try {
-          const response = await api.post(`/projects/modules/`, {
-            name: this.newModuleName,
-            project: projectId,
-          });
-          console.log("✅ Yaratildi:", response.data);
-          await this.reloadProjects();
+        const response = await api.post(`/projects/modules/`, {
+          name: this.newModuleName,
+          project: projectId,
+        });
+        console.log("✅ Yaratildi:", response.data);
+        await this.reloadProjects();
 
         if (!this.expandedProjects.includes(projectId)) {
           this.expandedProjects.push(projectId);
@@ -497,14 +506,14 @@ export default {
     selectProjectForChart(project) {
       this.selectedProjectForChart = project;
     },
-    openAddTaskModal(projectId, moduleId) {
-      this.selectedProjectForTask = { project: projectId, module: moduleId };
-      this.showAddTaskModal = true;
-    },
-    closeAddTaskModal() {
-      this.showAddTaskModal = false;
-      this.selectedProjectForTask = { project: null, module: null };
-    },
+    //openAddTaskModal(projectId, moduleId, statusId) {
+    //  this.selectedProjectForTask = { project: projectId, module: moduleId };
+    //  this.showAddTaskModal = true;
+    //},
+    //closeAddTaskModal() {
+    //  this.showAddTaskModal = false;
+    //  this.selectedProjectForTask = { project: null, module: null };
+    //},
     statusLabel(status) {
       const map = {
         done: "Завершен",
@@ -523,12 +532,9 @@ export default {
       return new Date(dateStr).toLocaleDateString("ru-RU");
     },
     getUnlinkedTasks(proj) {
-      if (!proj.tasks) return [];
-      return proj.tasks.filter(
-        (task) => task.module_id === null || task.module_id === undefined
-      );
+      if (!proj || !proj.tasks) return [];
+      return proj.tasks.filter((task) => !task.module);
     },
-
     async loadUsers() {
       try {
         const { data } = await api.get("/auth/users/");
@@ -546,9 +552,9 @@ export default {
       this.showAddTaskModal = false;
       this.selectedTaskContext = { projectId: null, moduleId: null };
     },
+    
     async handleTaskCreate(payload) {
       try {
-        console.log("Qabul qilingan payload:", payload);
         const response = await api.post("/tasks/", payload);
         console.log("Server javobi:", response.data);
         this.reloadProjects();

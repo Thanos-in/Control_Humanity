@@ -20,7 +20,6 @@ class StatusViewSet(viewsets.ModelViewSet):
         return [permissions.IsAuthenticated()]
 
     def get_queryset(self):
-        # For list action, filter by project_id; for detail/update/destroy, return all
         if self.action == 'list':
             project_id = self.request.query_params.get('project_id')
             if project_id:
@@ -29,7 +28,6 @@ class StatusViewSet(viewsets.ModelViewSet):
             ).filter(
                 user__isnull=True
             ).order_by('order')
-            # if no project_id, return only global statuses
             return Status.objects.filter(project__isnull=True).order_by('order')
         return Status.objects.all()
 
@@ -59,15 +57,38 @@ class TaskViewSet(viewsets.ModelViewSet):
             return [permissions.IsAuthenticated(), IsEmployeeOrManager()]
         return [permissions.IsAuthenticated()]
 
+
     def get_queryset(self):
-        user = self.request.user
-        if user.role == 'employee':
-            return Task.objects.filter(assigned_to=user)
-        elif user.role == 'manager':
-            return Task.objects.filter(project__manager=user)
-        elif user.role == 'director':
-            return Task.objects.filter(project__director=user)
-        return Task.objects.none()
+            user = self.request.user
+            qs = Task.objects.select_related('project', 'status', 'assigned_to')
+
+            # Role-based filtering
+            if user.role == 'employee':
+                qs = qs.filter(assigned_to=user)
+            elif user.role == 'manager':
+                qs = qs.filter(project__manager=user)
+            elif user.role == 'director':
+                qs = qs.filter(project__director=user)
+            else:
+                return Task.objects.none()
+
+            # Filter by project_id query param
+            project_id = self.request.query_params.get('project_id')
+            if project_id:
+                qs = qs.filter(project_id=project_id)
+
+            return qs
+
+
+    # def get_queryset(self):
+    #     user = self.request.user
+    #     if user.role == 'employee':
+    #         return Task.objects.filter(assigned_to=user)
+    #     elif user.role == 'manager':
+    #         return Task.objects.filter(project__manager=user)
+    #     elif user.role == 'director':
+    #         return Task.objects.filter(project__director=user)
+    #     return Task.objects.none()
 
     
     def perform_create(self, serializer):
@@ -93,7 +114,6 @@ class TaskViewSet(viewsets.ModelViewSet):
             send_telegram_message(user.telegram_id, text)
 
     def perform_update(self, serializer):
-        # Handle due_date updates along with updated_by
         due_date = self.request.data.get('due_date')
         save_kwargs = {'updated_by': self.request.user}
         if due_date is not None:

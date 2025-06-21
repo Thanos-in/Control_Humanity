@@ -136,145 +136,20 @@
           </svg>
         </div>
 
-        <!-- Status Table -->
-        <div
-          class="relative overflow-x-auto rounded-lg shadow scrollbar-black max-h-72 bg-white dark:bg-gray-900"
-        >
-          <template v-if="statuses && statuses.length">
-            <!-- Status Table -->
-            <div
-              class="relative overflow-x-auto overflow-y-auto scrollbar-black shadow-md sm:rounded-lg"
-            >
-              <table
-                class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
-              >
-                <thead
-                  class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
-                >
-                  <tr>
-                    <th scope="col" class="p-4">
-                      <div class="flex items-center">
-                        <input
-                          id="checkbox-all-status"
-                          type="checkbox"
-                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                        />
-                        <label for="checkbox-all-status" class="sr-only"
-                          >Выбрать все</label
-                        >
-                      </div>
-                    </th>
-                    <th scope="col" class="px-6 py-3">Статус</th>
-                    <th scope="col" class="px-6 py-3">Глобальный</th>
-                    <th scope="col" class="px-6 py-3 text-right">
-                      <button
-                        @click="addStatus"
-                        class="text-white bg-purple-600 hover:bg-purple-700 focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2 shadow-md"
-                      >
-                        + Добавить статус
-                      </button>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="status in statuses"
-                    :key="status.id"
-                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                  >
-                    <td class="w-4 p-4">
-                      <div class="flex items-center">
-                        <input
-                          :id="`checkbox-status-${status.id}`"
-                          type="checkbox"
-                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                        />
-                        <label
-                          :for="`checkbox-status-${status.id}`"
-                          class="sr-only"
-                          >Выбрать</label
-                        >
-                      </div>
-                    </td>
-                    <td
-                      class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                    >
-                      {{ status.name }}
-                    </td>
-                    <td class="px-6 py-4">
-                      <span
-                        class="inline-flex items-center justify-center w-5 h-5 rounded-full"
-                        :class="
-                          status.is_default ? 'bg-green-500' : 'bg-red-500'
-                        "
-                        title="По умолчанию"
-                      >
-                        <svg
-                          v-if="status.is_default"
-                          class="w-3 h-3 text-white"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                        <svg
-                          v-else
-                          class="w-3 h-3 text-white"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
-                      </span>
-                    </td>
-                    <td class="px-6 py-4 text-right" v-if="status.isNew">
-                      <input
-                        v-model="status.name"
-                        placeholder="Название статуса"
-                        class="border rounded px-2 py-1 mr-2"
-                      />
-                      <button
-                        @click="saveNewStatus(status)"
-                        class="px-2 py-1 bg-green-500 hover:bg-green-600 text-white rounded mr-1"
-                      >
-                        Сохранить
-                      </button>
-                      <button
-                        @click="cancelNewStatus(status)"
-                        class="px-2 py-1 bg-red-500 hover:bg-red-600 text-white rounded"
-                      >
-                        Отмена
-                      </button>
-                    </td>
-                    <td class="px-6 py-4 text-right" v-else></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </template>
-
-          <template v-else>
-            <div class="p-4 text-sm text-gray-600 dark:text-gray-300">
-              Статусы отсутствуют.
-            </div>
-          </template>
-        </div>
+        <!-- <div class="flex items-start gap-3">
+          <span class="text-sm font-medium text-gray-800 dark:text-gray-200">
+            Cвязанные задачи :
+          </span>
+          <p class="bottom-[535px] text-gray-800 dark:text-gray-200">
+            {{ project.tasks.length }}
+          </p>
+        </div> -->
       </div>
     </section>
   </div>
-  <KanbanBoard :projectId="projectId" />
+  <div class="top-10">
+    <KanbanBoard :projectId="projectId" />
+  </div>
 </template>
 
 <script>

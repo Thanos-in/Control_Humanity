@@ -9,6 +9,9 @@ module.exports = {
         'scroll-track': '#000',
         'scroll-thumb': '#333',
       },
+      rotate: {
+        '5': '5deg',
+      },
       keyframes: {
         splash: {
           '0%': {

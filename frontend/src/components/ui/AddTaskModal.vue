@@ -48,11 +48,11 @@
           <select
             v-model="newTask.assigned_to_id"
             id="assigned_to_id"
-            class="w-full p-3 bg-neutral-900 text-white border border-white/30 placeholder-white/60 rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 text-base"
+            class="w-full p-3 bg-white/10 border border-black placeholder-black text-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 text-base resize-none"
             required
           >
-            <option disabled value="">Выберите пользователя</option>
-            <option v-for="user in users" :key="user.id" :value="user.id">
+            <option disabled value="" class="bg-neutral-900">Выберите пользователя</option>
+            <option v-for="user in users" :key="user.id" :value="user.id" class="bg-neutral-900">
               {{ user.username }}
             </option>
           </select>

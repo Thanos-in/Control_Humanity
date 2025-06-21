@@ -105,7 +105,7 @@
                   Изменить
                 </li>
                 <li
-                  @click="confirmDelete('project', proj.id)"
+                  @click="prepareDelete('project', proj.id)"
                   class="px-4 py-2 hover:bg-gray-900 rounded-xl cursor-pointer text-left text-red-400 text-sm"
                 >
                   Удалить
@@ -128,7 +128,7 @@
                   v-model="newModuleName"
                   type="text"
                   placeholder="Название модуля"
-                  class="flex border text-black rounded px-3 py-1"
+                  class="flex border text-white border-b dark:bg-gray-800 rounded px-3 py-1"
                 />
                 <svg class="flex-1 h-1"></svg>
                 <button
@@ -209,7 +209,7 @@
                       Изменить
                     </li>
                     <li
-                      @click="confirmDelete('module', mod.id)"
+                      @click="prepareDelete('module', mod.id, proj.id)"
                       class="px-4 py-2 hover:bg-gray-900 rounded-xl cursor-pointer text-left text-red-400 text-sm"
                     >
                       Удалить
@@ -268,10 +268,10 @@
                         Изменить
                       </li>
                       <li
-                        @click="confirmDelete('task', task.id)"
+                        @click="prepareDelete('task', task.id, task.projectId)"
                         class="px-4 py-2 hover:bg-gray-900 rounded-xl cursor-pointer text-left text-red-400 text-sm"
                       >
-                        Удалить{{ proj.tasks }}
+                        Удалить
                       </li>
                     </ul>
                   </td>
@@ -327,10 +327,10 @@
                     Изменить
                   </li>
                   <li
-                    @click="confirmDelete('task', task.id)"
+                    @click="prepareDelete('task', task.id, task.projectId)"
                     class="px-4 py-2 hover:bg-gray-900 rounded-xl cursor-pointer text-left text-red-400 text-sm"
                   >
-                    Удалить
+                    Удалить{{ task.id }}
                   </li>
                 </ul>
               </td>
@@ -339,6 +339,45 @@
         </template>
       </tbody>
     </table>
+
+    <!-- Central Confirm Modal -->
+    <div
+      v-if="showConfirmModal"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+    >
+      <div
+        class="bg-neutral-900/90 backdrop-blur-md border border-neutral-700 rounded-lg shadow p-6 w-80 text-gray-200"
+      >
+        <!-- Xabarni dinamik qilamiz -->
+        <p class="text-sm mb-4">
+          Вы действительно хотите удалить
+          {{
+            inlineDeleteInfo.type === "project"
+              ? "проект"
+              : inlineDeleteInfo.type === "module"
+              ? "модуль"
+              : inlineDeleteInfo.type === "task"
+              ? "задачу"
+              : ""
+          }}?
+        </p>
+        <div class="flex justify-end space-x-2">
+          <button
+            @click="cancelDelete"
+            class="px-3 py-1 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 text-xs"
+          >
+            Отменить
+          </button>
+          <button
+            @click="confirmDelete"
+            class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-xs"
+          >
+            Удалить
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div class="fixed bottom-0 w-full z-50">
       <!-- <ProjectProgressChart
         class="mr-4"
@@ -362,6 +401,12 @@ export default {
       openMenuId: null,
       expandedProjects: [],
       expandedModules: [],
+      inlineDeleteInfo: {
+        type: null,
+        id: null,
+        projectId: null,
+      },
+      showConfirmModal: false,
       projects: [],
       addingModuleProjectId: null,
       editingModuleId: null,
@@ -397,6 +442,50 @@ export default {
     handleDocumentClick() {
       if (this.openMenuId) {
         this.openMenuId = null;
+      }
+    },
+
+    prepareDelete(type, id, projectId = null) {
+      this.inlineDeleteInfo = { type, id, projectId };
+      this.showConfirmModal = true;
+    },
+
+    // Modal-dagi “Отменить”
+    cancelDelete() {
+      this.showConfirmModal = false;
+      this.inlineDeleteInfo = { type: null, id: null, projectId: null };
+    },
+
+    // Modal-dagi “Удалить”
+    confirmDelete() {
+      const { type, id, projectId } = this.inlineDeleteInfo;
+      this.showConfirmModal = false;
+      this.deleteInline(type, id, projectId);
+      this.inlineDeleteInfo = { type: null, id: null, projectId: null };
+    },
+
+    // Siz oldin yozgan umumiy o'chirish funksiyasi
+    async deleteInline(type, id, projectId) {
+      try {
+        let url;
+        if (type === "project") {
+          url = `/projects/${id}/`;
+        } else if (type === "module") {
+          url = `/projects/modules/${id}/`;
+        } else if (type === "task") {
+          url = `/tasks/${id}/`;
+        } else {
+          throw new Error("Unknown type: " + type);
+        }
+
+        await api.delete(url);
+        await this.reloadProjects();
+
+        if (projectId && !this.expandedProjects.includes(projectId)) {
+          this.expandedProjects.push(projectId);
+        }
+      } catch (e) {
+        console.error(`${type} o'chirish xatosi:`, e);
       }
     },
 
@@ -536,7 +625,7 @@ export default {
     },
     async loadUsers() {
       try {
-        const { data } = await api.get("/auth/users/");
+        const { data } = await api.get("/auth/users/employees/");
         this.users = data;
       } catch (e) {
         console.error("Пользователи не загружены", e);
@@ -551,7 +640,7 @@ export default {
       this.showAddTaskModal = false;
       this.selectedTaskContext = { projectId: null, moduleId: null };
     },
-    
+
     async handleTaskCreate(payload) {
       try {
         const response = await api.post("/tasks/", payload);

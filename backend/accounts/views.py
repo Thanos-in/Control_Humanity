@@ -72,9 +72,14 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def employees(self, request):
         qs = User.objects.filter(role='employee')
+
         page = self.paginate_queryset(qs)
-        serializer = self.get_serializer(page or qs, many=True)
-        return self.get_paginated_response(serializer.data)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(qs, many=True)
+        return Response(serializer.data)
 
 class BindTelegramView(APIView):
     permission_classes = [AllowAny]

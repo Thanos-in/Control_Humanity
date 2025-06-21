@@ -1,5 +1,7 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
 from rest_framework.decorators import action
 from django.contrib.auth import get_user_model
 from .serializers import RegisterSerializer, UserSerializer
@@ -74,7 +76,23 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(page or qs, many=True)
         return self.get_paginated_response(serializer.data)
 
+class BindTelegramView(APIView):
+    permission_classes = [AllowAny]
 
+    def post(self, request):
+        phone = request.data.get("phone")
+        telegram_id = request.data.get("telegram_id")
+
+        if not phone or not telegram_id:
+            return Response({"error": "phone va telegram_id talab qilinadi."}, status=400)
+
+        try:
+            user = User.objects.get(phone=phone)
+            user.telegram_id = telegram_id
+            user.save()
+            return Response({"message": "Telegram ID muvaffaqiyatli bog‘landi."})
+        except User.DoesNotExist:
+            return Response({"error": "Bu telefon raqam bilan foydalanuvchi topilmadi."}, status=404)
 
 
 #=======================================================================>>>>

@@ -371,7 +371,6 @@ export default {
       selectedProjectForModule: null,
       selectedTaskContext: { projectId: null, moduleId: null },
       selectedProjectForChart: null,
-      selectedProjectForTask: { project: null, module: null },
     };
   },
   computed: {

@@ -48,7 +48,7 @@
           <select
             v-model="newTask.assigned_to_id"
             id="assigned_to_id"
-            class="w-full p-3 bg-white/10 border border-white/30 placeholder-white/60 text-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
+            class="w-full p-3 bg-neutral-900 text-white border border-white/30 placeholder-white/60 rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 text-base"
             required
           >
             <option disabled value="">Выберите пользователя</option>

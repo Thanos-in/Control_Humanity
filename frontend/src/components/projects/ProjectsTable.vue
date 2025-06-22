@@ -57,8 +57,8 @@
             </th>
             <td class="px-6 py-4">{{ proj.manager?.username || "—" }}</td>
             <td class="px-6 py-4">{{ proj.period }}</td>
-            <td class="px-6 py-4">—</td>
-            <td class="px-6 py-4">—</td>
+            <td class="px-6 py-4">{{ getProjectStatus(proj) }}</td>
+            <td class="px-6 py-4">{{ getProjectCompletion(proj) }}%</td>
             <td class="relative px-6 py-4 text-right">
               <svg
                 @click.stop="toggleMenu(`proj-${proj.id}`)"
@@ -243,7 +243,7 @@
                       >{{ statusLabel(task.status.name) }}</span
                     >
                   </td>
-                  <td class="px-6 py-4">—</td>
+                  <td class="px-6 py-4">{{ getTaskCompletion(task) }}%</td>
                   <td class="relative px-6 py-4 text-right">
                     <button
                       @click.stop="toggleMenu(`task-${task.id}`)"
@@ -302,7 +302,7 @@
                   {{ statusLabel(task.status.name) }}
                 </span>
               </td>
-              <td class="px-6 py-4">—</td>
+              <td class="px-6 py-4">{{ getTaskCompletion(task) }}%</td>
               <td class="relative px-6 py-4 text-right">
                 <button
                   @click.stop="toggleMenu(`task-${task.id}`)"
@@ -330,7 +330,7 @@
                     @click="prepareDelete('task', task.id, task.projectId)"
                     class="px-4 py-2 hover:bg-gray-900 rounded-xl cursor-pointer text-left text-red-400 text-sm"
                   >
-                    Удалить{{ task.id }}
+                    Удалить
                   </li>
                 </ul>
               </td>
@@ -439,6 +439,47 @@ export default {
     await this.loadUsers();
   },
   methods: {
+    getProjectTasks(project) {
+      const fromModules = project.modules?.flatMap(m => m.tasks || []) || [];
+      const unlinked  = this.getUnlinkedTasks(project);
+      return [...fromModules, ...unlinked];
+    },
+
+    getProjectStatus(project) {
+      const tasks = this.getProjectTasks(project);
+      if (!tasks.length) return "—";
+
+      const withOrder = tasks.filter(
+        t => t.status && typeof t.status.order === "number"
+      );
+      if (!withOrder.length) return "—";
+
+      const [minTask] = withOrder.sort(
+        (a, b) => a.status.order - b.status.order
+      );
+      return this.statusLabel(minTask.status.name);
+    },
+    getProjectCompletion(project) {
+      const tasks = this.getProjectTasks(project);
+      if (!tasks.length) return 0;
+
+      const doneCount = tasks.filter(t => {
+        return t.status?.name === 'Finish';
+      }).length;
+
+      return Math.round((doneCount / tasks.length) * 100);
+    },
+    getTaskCompletion(task) {
+        const name = task.status?.name;
+        if (name === 'Start') {
+          return 0;
+        }
+        if (name === 'Finish') {
+          return 100;
+        }
+        return 50;
+      },
+
     handleDocumentClick() {
       if (this.openMenuId) {
         this.openMenuId = null;

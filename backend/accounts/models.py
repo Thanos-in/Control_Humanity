@@ -13,6 +13,16 @@ class User(AbstractUser):
     phone = models.CharField(max_length=20, blank=True, null=True) # unique=True
     telegram_id = models.CharField(max_length=32, blank=True, null=True)
     profile_picture = models.ImageField(upload_to='profiles/', blank=True, null=True)
+    LANG_CHOICES = [
+        ('uz', 'O‘zbekcha'),
+        ('ru', 'Русский'),
+        ('en', 'English'),
+    ]
+    language = models.CharField(
+        max_length=2,
+        choices=LANG_CHOICES,
+        default='ru',
+    )
 
     def is_employee(self):
         return self.role == 'employee'

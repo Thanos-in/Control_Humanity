@@ -15,8 +15,8 @@
       >
         <tr>
           <th class="px-6 py-3"></th>
-          <th class="px-6 py-3">Проект / Модуль / Задача</th>
-          <th class="px-6 py-3">Ответственный</th>
+          <th class="px-6 py-3">{{ $t("project_Module_Tasks") }}</th>
+          <th class="px-6 py-3">{{ $t("responsible") }}</th>
           <th class="px-6 py-3">Период</th>
           <th class="px-6 py-3">Статус</th>
           <th class="px-6 py-3">Выполнения</th>

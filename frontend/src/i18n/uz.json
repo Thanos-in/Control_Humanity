@@ -8,6 +8,9 @@
     "tasks": "Vazifalar",
     "chat": "Chatlar",
     "users": "Foydalanuvchilar",
-    "ratings": "Reyting"
+    "ratings": "Reyting",
+    "project_Module_Tasks": "Loyiha / Modul / Vazifa",
+    "responsible": "Mas'ul",
+    "description":"Tavsif"
   }
   

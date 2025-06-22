@@ -13,13 +13,11 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     
     def get_permissions(self):
-        # Ro'yhatga olishga (create) hamma uchun ruxsat
         if self.action == 'create':
             return [permissions.AllowAny()]
         return super().get_permissions()
 
     def get_serializer_class(self):
-        # Create uchun RegisterSerializer, boshqalari uchun UserSerializer
         if self.action == 'create':
             return RegisterSerializer
         return UserSerializer
@@ -27,34 +25,44 @@ class UserViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         user_to_delete = self.get_object()
 
-        # 1) employee rolidagi foydalanuvchi hech kimni o'chira olmaydi
         if request.user.role == 'employee':
             return Response(
                 {"detail": "Sizda bu amalni bajarish huquqi yoʻq."},
                 status=status.HTTP_403_FORBIDDEN
             )
 
-        # 2) superuserni o'chirishga ruxsat yoʻq
         if user_to_delete.is_superuser:
             return Response(
                 {"detail": "Superuserni oʻchirib boʻlmaydi."},
                 status=status.HTTP_403_FORBIDDEN
             )
 
-        # 3) o'zini o'zi o'chirishga ruxsat yo'q
         if user_to_delete == request.user:
             return Response(
                 {"detail": "Oʻzingizni oʻchirib boʻlmaysiz."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Hammasi joyida bo'lsa, odatdagi o'chirishni bajar
         return super().destroy(request, *args, **kwargs)
 
     @action(detail=False, methods=['get', 'patch'])
     def me(self, request):
-        serializer = self.get_serializer(request.user)
-        return Response(serializer.data)
+        if request.method == 'GET':
+            serializer = self.get_serializer(request.user)
+            return Response(serializer.data)
+
+        if request.method == 'PATCH':
+            serializer = self.get_serializer(
+                request.user, data=request.data, partial=True
+            )
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)
+
+    # @action(detail=False, methods=['get', 'patch'])
+    # def me(self, request):
+    #     serializer = self.get_serializer(request.user)
+    #     return Response(serializer.data)
 
     @action(detail=False, methods=['get'])
     def managers(self, request):

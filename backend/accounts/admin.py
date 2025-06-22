@@ -12,7 +12,7 @@ class UserAdmin(BaseUserAdmin):
             'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
         }),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
-        (_('Custom Fields'), {'fields': ('role', 'profile_picture', 'bio', 'telegram_id')}),
+        (_('Custom Fields'), {'fields': ('role', 'profile_picture', 'bio', 'telegram_id', 'language')}),
     )
     
     list_display = ('username', 'email', 'full_name', 'role', 'is_staff', 'is_active')

@@ -6,6 +6,7 @@
       :project-id="selectedTaskContext.projectId"
       :module-id="selectedTaskContext.moduleId"
       :users="users"
+      :marked_to="marked_to_id"
       @close="closeAddTaskModal"
       @save="handleTaskCreate"
     />
@@ -20,7 +21,7 @@
           <th class="px-6 py-3">Период</th>
           <th class="px-6 py-3">Статус</th>
           <th class="px-6 py-3">Выполнения</th>
-          <th class="px-6 py-3">Действия</th>
+          <th class="px-6 py-3">  </th>
           <!-- <th class="px-6 py-3 flex space-x-2 justify-end"></th> -->
         </tr>
       </thead>
@@ -491,13 +492,11 @@ export default {
       this.showConfirmModal = true;
     },
 
-    // Modal-dagi “Отменить”
     cancelDelete() {
       this.showConfirmModal = false;
       this.inlineDeleteInfo = { type: null, id: null, projectId: null };
     },
 
-    // Modal-dagi “Удалить”
     confirmDelete() {
       const { type, id, projectId } = this.inlineDeleteInfo;
       this.showConfirmModal = false;

@@ -11,6 +11,8 @@
     "ratings": "Рейтинг",
     "project_Module_Tasks": "Проект / Модуль / Задача",
     "responsible": "Ответственный",
-    "description":"Описание"
+    "description": "Описание",
+
+    "projectName": "Введите название проекта"
   }
   

@@ -10,6 +10,24 @@ const app = createApp(App)
 app.use(store)
 app.use(router)
 app.use(i18n)
+
+// // v-click-outside direktiva
+// app.directive('click-outside', {
+//     beforeMount(el, binding) {
+//       el.__clickOutsideHandler__ = event => {
+//         // Agar click element ichida bo‘lmasa, funksiyani chaqir
+//         if (!(el === event.target || el.contains(event.target))) {
+//           binding.value(event)
+//         }
+//       }
+//       document.addEventListener('click', el.__clickOutsideHandler__)
+//     },
+//     unmounted(el) {
+//       document.removeEventListener('click', el.__clickOutsideHandler__)
+//       el.__clickOutsideHandler__ = null
+//     }
+//   })
+
 app.mount('#app')
 
 setupInterceptors(store)

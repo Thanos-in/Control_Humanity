@@ -24,6 +24,14 @@ class TaskSerializer(serializers.ModelSerializer):
         write_only=True,
         required=False
     )
+    marked_to_id = serializers.PrimaryKeyRelatedField(
+    queryset=User.objects.filter(role='employee'),
+    source='marked_to',
+    many=True,
+    write_only=True,
+    required=False
+    )
+    marked_to = UserSerializer(many=True, read_only=True)
     status_id = serializers.PrimaryKeyRelatedField(
         queryset=Status.objects.all(),
         source='status',
@@ -51,6 +59,7 @@ class TaskSerializer(serializers.ModelSerializer):
             'id', 'title', 'description',
             'project',      'project_id',
             'assigned_to',  'assigned_to_id',
+            'marked_to',    'marked_to_id',
             'status',       'status_id',
             'created_by',   'created_at',
             'updated_at',   'due_date',

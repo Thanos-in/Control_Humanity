@@ -38,6 +38,12 @@ class Task(models.Model):
         blank=True,
         limit_choices_to={'role': 'employee'}
     )
+    marked_to = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name='task_to_be_marked',
+        limit_choices_to={'role': 'employee'},
+        blank=True,
+    )
     status = models.ForeignKey(
         Status,
         on_delete=models.PROTECT,

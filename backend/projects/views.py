@@ -7,12 +7,28 @@ from .permissions import IsDirector
 from rest_framework.response import Response
 
 class ProjectViewSet(viewsets.ModelViewSet):
-    def get_queryset(self):
-        if self.action in ['archive', 'destroy', 'update', 'partial_update', 'retrieve', 'archivedprojects']:
-            return Project.objects.all()  
-        return Project.objects.filter(is_archived=False)
     serializer_class = ProjectSerializer
     permission_classes = [permissions.IsAuthenticated()]
+    
+    def get_queryset(self):
+        user = self.request.user
+
+        if hasattr(user, 'role') and user.role == 'manager':
+            qs = Project.objects.filter(manager=user)
+        elif hasattr(user, 'role') and user.role == 'director':
+            qs = Project.objects.all()
+        else:
+            qs = Project.objects.none()
+
+        if self.action in ['archive', 'destroy', 'update', 'partial_update', 'retrieve', 'archivedprojects']:
+            return qs
+        return qs.filter(is_archived=False)
+        
+    #     if self.action in ['archive', 'destroy', 'update', 'partial_update', 'retrieve', 'archivedprojects']:
+    #         return Project.objects.all()  
+    #     return Project.objects.filter(is_archived=False)
+    # serializer_class = ProjectSerializer
+    # permission_classes = [permissions.IsAuthenticated()]
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
@@ -25,7 +41,10 @@ class ProjectViewSet(viewsets.ModelViewSet):
         
     @action(detail=False, methods=['get'], url_path='archivedprojects')
     def archivedprojects(self, request):
-        archived = Project.objects.filter(is_archived=True)
+        qs = self.get_queryset()
+    
+        archived = qs.filter(is_archived=True)
+        
         serializer = self.get_serializer(archived, many=True)
         return Response(serializer.data)        
         

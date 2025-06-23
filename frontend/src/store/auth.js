@@ -66,6 +66,8 @@ const actions = {
     // localStorage.setItem('userId', profile.data.id)
 
     scheduleRefresh(dispatch, data.access)
+
+    return profile.data.role
   },
 
   async checkAuth({ commit, dispatch, state }) {

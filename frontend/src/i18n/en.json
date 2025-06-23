@@ -11,6 +11,8 @@
     "ratings": "Ratings",
     "project_Module_Tasks": "Project / Module / Task",
     "responsible": "Responsible",
-    "description":"Description"
+    "description": "Description",
+
+    "projectName": "Enter the project name"
   }
   

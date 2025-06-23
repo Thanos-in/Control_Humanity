@@ -74,11 +74,20 @@ export default {
 
       try {
         this.loading = true
-        await this.$store.dispatch('auth/login', {
+        //await this.$store.dispatch('auth/login', {
+        //  username: this.credentials.username,
+        //  password: this.credentials.password
+        //})
+        //this.$router.push('/projects')
+        const role = await this.$store.dispatch("auth/login", {
           username: this.credentials.username,
-          password: this.credentials.password
-        })
-        this.$router.push('/projects')
+          password: this.credentials.password,
+        });
+        if (role === "employee") {
+          this.$router.push("/taskstable");
+        } else {
+          this.$router.push("/projects");
+        }
       } catch (err) {
         if (err.response && err.response.data) {
           this.errorMessage = err.response.data.detail || 'Login failed.'

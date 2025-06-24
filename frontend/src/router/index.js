@@ -15,8 +15,9 @@ const routes = [
     meta: { requiresAuth: true },
     children: [
       { path: 'projects', component: () => import('@/components/projects/ProjectsTable.vue'), meta: { requiresAuth: true }, },
+      { path: 'archivedprojects', component: () => import('@/components/projects/ArchivedProjects.vue'), meta: { requiresAuth: true }, },
       { path: 'taskstable', component: () => import('@/components/tasks/TasksTable.vue'), meta: { requiresAuth: true }, },
-      { path: 'archivedprojects', component: () => import('@/components/projects/ArchivedProjects.vue') },
+      { path: 'archivedtasks', component: () => import('@/components/tasks/ArchivedTasks.vue'), meta: { requiresAuth: true }, },
       { path: 'projects/:id', component: () => import('@/components/projects/ProjectDetail.vue') },
       { path: 'chat', component: () => import('@/components/chat/ChatList.vue') },
       { path: 'chat/:id', component: () => import('@/components/chat/ChatWindow.vue') },

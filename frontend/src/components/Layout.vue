@@ -40,6 +40,7 @@
             class="h-7 w-[700px] px-3 rounded-lg bg-gray-400 placeholder-gray-600 text-gray-900 text-sm focus:bg-gray-400 focus:outline-none transition dark:bg-gray-800 dark:placeholder-gray-400 dark:text-white"
           />
           <button
+            v-if="$store.state.auth.user?.role !== 'employee'"
             @click="showForm = true"
             class="h-8 px-4 bg-gray-400 hover:bg-gray-500 text-gray-900 text-sm font-medium rounded-md shadow transition-colors duration-200 dark:bg-blue-700 dark:text-white dark:hover:bg-blue-800"
           >
@@ -88,8 +89,7 @@
           >
             <img
               @click.stop="userDropdown = !userDropdown"
-              v-if="profile.profile_picture"
-              :src="profile.profile_picture"
+              :src="profile.profile_picture || defaultAvatar"
               alt="User Avatar"
               class="w-full h-full object-cover"
             />
@@ -348,6 +348,51 @@
               </li>
             </ul>
           </div>
+
+        <!-- Задачи -->
+
+            <div class="relative">
+              <button
+                @click="toggleTasks"
+                class="flex items-center w-full px-2 py-1 text-sm font-medium text-gray-900 hover:text-gray-800 rounded transition dark:text-gray-300 dark:hover:text-white"
+              >
+                Задачи
+                <svg
+                  class="w-3 h-3 ml-auto text-gray-600 transition-transform duration-200 dark:text-gray-400"
+                  :class="{ 'rotate-180': showTasksDropdown }"
+                  fill="none"
+                  viewBox="0 0 10 6"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m1 1 4 4 4-4" />
+                </svg>
+              </button>
+              <ul
+                v-show="showTasksDropdown"
+                class="mt-1 space-y-1 bg-gray-200 rounded-md shadow-lg overflow-hidden dark:bg-gray-800"
+              >
+                <li>
+                  <router-link
+                    to="/taskstable"
+                    class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-300 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white transition"
+                  >
+                    Все задачи
+                  </router-link>
+                </li>
+                <li>
+                  <router-link
+                    to="/archivedtasks"
+                    class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-300 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white transition"
+                  >
+                    Архивированные задачи
+                  </router-link>
+                </li>
+              </ul>
+            </div>
+
           <router-link
             v-for="(path, key) in otherLinks"
             :key="key"
@@ -407,6 +452,7 @@ import api from "@/utils/axios";
 import ProjectProgressChart from "@/components/ui/ProjectProgressChart.vue";
 import Modal from "@/components/ui/Modal.vue";
 import ProjectForm from "@/components/projects/ProjectForm.vue";
+import defaultAvatar from '@/assets/Default.png'
 
 export default {
   name: "Layout",
@@ -433,9 +479,10 @@ export default {
       showConfirmModal: false,
       profileSettings: false,
       showProjectsDropdown: true,
+      showTasksDropdown: false,
       profileSettings: false,
+      defaultAvatar,
       otherLinks: {
-        tasks: "/mytasks",
         chat: "/chat",
         users: "/users",
         ratings: "/ratings",
@@ -509,6 +556,9 @@ export default {
     // projects aside
     toggleProjects() {
       this.showProjectsDropdown = !this.showProjectsDropdown;
+    },
+    toggleTasks() {
+      this.showTasksDropdown = !this.showTasksDropdown;
     },
     getInitials(name) {
       if (!name) return "";

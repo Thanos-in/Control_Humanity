@@ -65,8 +65,12 @@ class TaskSerializer(serializers.ModelSerializer):
             'updated_at',   'due_date',
             'color',        'data_input',
             'module',       'module_id',
+            'is_archived',
         )
         read_only_fields = ('created_by',)
+        extra_kwargs = {
+          'is_archived': {'required': False},
+        }
         
     def validate_assigned_to(self, user):
 

@@ -17,20 +17,18 @@
           :key="task.id"
           class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
         >
+          <!-- Задачи: task.title -->
           <td
             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
           >
             {{ task.title }}
           </td>
-
           <td class="px-6 py-4">
             {{ formatPeriod(task.created_at, task.due_date) }}
           </td>
-          <!-- Статус: вложенный serializer: task.status.name yoki task.status.title -->
           <td class="px-6 py-4">
             {{ task.status?.name || task.status?.title || "—" }}
           </td>
-
           <td class="px-6 py-4 text-right space-x-2">
             <button
               @click="goToTaskForm(task.id)"
@@ -40,6 +38,7 @@
             </button>
           </td>
         </tr>
+
         <tr v-if="tasks.length === 0">
           <td colspan="4" class="px-6 py-4 text-center text-gray-500">
             Нет задач
@@ -48,13 +47,6 @@
       </tbody>
     </table>
   </div>
-
-  <TaskFormModal
-    :visible="showEditModal"
-    :task-id="selectedTask?.id"
-    @close="closeEditModal"
-    @saved="onTaskSaved"
-  />
 </template>
 
 <script setup>
@@ -71,15 +63,15 @@ const router = useRouter();
 const showEditModal = ref(false);
 const selectedTask = ref(null);
 
-function goToTaskForm(taskId) {
-  router.push({ path: `/taskform/${taskId}` });
-}
+  function goToTaskForm(taskId) {
+      router.push({ path: `/taskform/${taskId}`, query: { archived: '1' } });
+  }
 
 async function fetchTasks() {
   loading.value = true;
   error.value = null;
   try {
-    const response = await api.get("/tasks/");
+    const response = await api.get("/tasks/archivedtasks/");
     tasks.value = response.data;
     // tasks.value = response.data.results
   } catch (err) {
@@ -124,3 +116,4 @@ onMounted(() => {
   fetchTasks();
 });
 </script>
+

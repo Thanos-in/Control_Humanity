@@ -3,7 +3,7 @@ from .models import Project, Module
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny 
 from .serializers import ProjectSerializer, ModuleSerializer
-from .permissions import IsDirector
+from .permissions import IsDirector  
 from rest_framework.response import Response
 
 class ProjectViewSet(viewsets.ModelViewSet):
@@ -41,10 +41,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
         
     @action(detail=False, methods=['get'], url_path='archivedprojects')
     def archivedprojects(self, request):
-        qs = self.get_queryset()
-    
-        archived = qs.filter(is_archived=True)
-        
+        archived = Project.objects.filter(is_archived=True)
         serializer = self.get_serializer(archived, many=True)
         return Response(serializer.data)        
         

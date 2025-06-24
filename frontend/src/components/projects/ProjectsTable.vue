@@ -21,7 +21,7 @@
           <th class="px-6 py-3">Период</th>
           <th class="px-6 py-3">Статус</th>
           <th class="px-6 py-3">Выполнения</th>
-          <th class="px-6 py-3">  </th>
+          <th class="px-6 py-3"></th>
           <!-- <th class="px-6 py-3 flex space-x-2 justify-end"></th> -->
         </tr>
       </thead>
@@ -441,8 +441,11 @@ export default {
   },
   methods: {
     getProjectTasks(project) {
-      const fromModules = project.modules?.flatMap(m => m.tasks || []) || [];
-      const unlinked  = this.getUnlinkedTasks(project);
+      const fromModules =
+        project.modules?.flatMap((m) =>
+          (m.tasks || []).filter((t) => !t.is_archived)
+        ) || [];
+      const unlinked = this.getUnlinkedTasks(project);
       return [...fromModules, ...unlinked];
     },
 
@@ -451,7 +454,7 @@ export default {
       if (!tasks.length) return "—";
 
       const withOrder = tasks.filter(
-        t => t.status && typeof t.status.order === "number"
+        (t) => t.status && typeof t.status.order === "number"
       );
       if (!withOrder.length) return "—";
 
@@ -464,22 +467,22 @@ export default {
       const tasks = this.getProjectTasks(project);
       if (!tasks.length) return 0;
 
-      const doneCount = tasks.filter(t => {
-        return t.status?.name === 'Finish';
+      const doneCount = tasks.filter((t) => {
+        return t.status?.name === "Finish";
       }).length;
 
       return Math.round((doneCount / tasks.length) * 100);
     },
     getTaskCompletion(task) {
-        const name = task.status?.name;
-        if (name === 'Start') {
-          return 0;
-        }
-        if (name === 'Finish') {
-          return 100;
-        }
-        return 50;
-      },
+      const name = task.status?.name;
+      if (name === "Start") {
+        return 0;
+      }
+      if (name === "Finish") {
+        return 100;
+      }
+      return 50;
+    },
 
     handleDocumentClick() {
       if (this.openMenuId) {
@@ -536,7 +539,6 @@ export default {
           name: this.newModuleName,
           project: projectId,
         });
-        console.log("✅ Yaratildi:", response.data);
         await this.reloadProjects();
 
         if (!this.expandedProjects.includes(projectId)) {
@@ -614,7 +616,14 @@ export default {
     async reloadProjects() {
       try {
         const { data } = await api.get("/projects/");
-        this.projects = data;
+        this.projects = data.map((proj) => ({
+          ...proj,
+          modules: (proj.modules || []).map((mod) => ({
+            ...mod,
+            tasks: (mod.tasks || []).filter((t) => !t.is_archived),
+          })),
+          tasks: (proj.tasks || []).filter((t) => !t.is_archived),
+        }));
       } catch (e) {
         console.error("Проекты не загружены", e);
       }
@@ -661,7 +670,7 @@ export default {
     },
     getUnlinkedTasks(proj) {
       if (!proj || !proj.tasks) return [];
-      return proj.tasks.filter((task) => !task.module);
+      return proj.tasks.filter((task) => !task.module && !task.is_archived);
     },
     async loadUsers() {
       try {

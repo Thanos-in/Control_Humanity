@@ -7,3 +7,5 @@ django-import-export
 pip install django-rq
 pip install python-telegram-bot
 pip install requests
+pip install celery
+pip install django-celery-beat

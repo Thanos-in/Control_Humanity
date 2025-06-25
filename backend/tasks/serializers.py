@@ -1,8 +1,9 @@
 from rest_framework import serializers
-from .models import Task, Status, SimpleTask
+from .models import Task, Status, SimpleTask, TaskMarkedUser
 from accounts.serializers import UserSerializer
 from django.contrib.auth import get_user_model
 from projects.models import Project, Module
+from django.db import transaction
 
 User = get_user_model()
 
@@ -65,7 +66,7 @@ class TaskSerializer(serializers.ModelSerializer):
             'updated_at',   'due_date',
             'color',        'data_input',
             'module',       'module_id',
-            'is_archived',
+            'is_archived',  'done'
         )
         read_only_fields = ('created_by',)
         extra_kwargs = {
@@ -79,15 +80,52 @@ class TaskSerializer(serializers.ModelSerializer):
         return user
 
     def create(self, validated_data):
+        # 1) Бошди Task яратиш учун 'marked_to' дан ажратиб оламиз
+        marked_users = validated_data.pop('marked_to', [])
+        # бошқа validated_data ичида assigned_to, project, status керакли мавжуд
+        with transaction.atomic():
+            task = super().create(validated_data)
 
-        validated_data['created_by'] = self.context['request'].user
-        return super().create(validated_data)
+            # 2) TaskMarkedUser жадвалига ёзиш
+            for idx, user in enumerate(marked_users):
+                TaskMarkedUser.objects.create(
+                    task=task,
+                    user=user,
+                    order=idx
+                )
+
+        return task
 
     def update(self, instance, validated_data):
+        # 1) Агар marked_to келган бўлса, уни олдик
+        marked_users = validated_data.pop('marked_to', None)
 
-        if 'assigned_to' in validated_data:
-            instance.assigned_to = validated_data.pop('assigned_to')
-        return super().update(instance, validated_data)
+        with transaction.atomic():
+            # 2) Асосий fieldларни сақлаймиз (assigned_to ва бошқа write_only'лар)
+            instance = super().update(instance, validated_data)
+
+            # 3) marked_to янгилаш керакми?
+            if marked_users is not None:
+                # стартерликни ўчириб, янги тартибда киритамиз
+                TaskMarkedUser.objects.filter(task=instance).delete()
+                for idx, user in enumerate(marked_users):
+                    TaskMarkedUser.objects.create(
+                        task=instance,
+                        user=user,
+                        order=idx
+                    )
+        return instance
+
+    # def create(self, validated_data):
+
+    #     validated_data['created_by'] = self.context['request'].user
+    #     return super().create(validated_data)
+
+    # def update(self, instance, validated_data):
+
+    #     if 'assigned_to' in validated_data:
+    #         instance.assigned_to = validated_data.pop('assigned_to')
+    #     return super().update(instance, validated_data)
 
 class SimpleTaskSerializer(serializers.ModelSerializer):
     status_detail = serializers.StringRelatedField(source='status', read_only=True)

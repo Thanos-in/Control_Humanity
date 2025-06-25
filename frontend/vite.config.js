@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src') // 👈 shu qator alias qo‘shadi
+      '@': path.resolve(__dirname, 'src') 
     }
   },
   server: {

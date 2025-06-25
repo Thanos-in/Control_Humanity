@@ -21,6 +21,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    'django_celery_beat',
+    
     'tasks.apps.TasksConfig',
     'accounts',
     'projects',
@@ -124,6 +126,25 @@ TELEGRAM_BOT_TOKEN = "8040016996:AAGRy-acyXz_Y3UwdJINC4oxsphE39BgeyE"
 #         "DEFAULT_TIMEOUT": 360, 
 #     },
 # }
+
+# CELERY sozlamalari
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+print(CELERY_TASK_SERIALIZER)
+from celery.schedules import crontab
+
+CELERY_BEAT_SCHEDULE = {
+    'mark-overdue-tasks-daily': {
+        'task': 'tasks.tasks.mark_overdue_tasks',
+        'schedule': crontab(minute='*/1'), #'schedule': crontab(hour=0, minute=0),  # har kuni soat 00:00 da ishga tushadi
+    },
+}
+
+# Agar celery-beat ishlatsa:
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
+
 
 JAZZMIN_SETTINGS = {
     "site_title": "Your Admin Panel",

@@ -3,6 +3,7 @@
     <draggable
       :list="statuses"
       group="statuses"
+      ghost-class="ghost"
       class="flex gap-6"
       @end="onStatusReorder"
       item-key="id"
@@ -12,12 +13,12 @@
         <section
           class="mt-3 w-80 min-h-20 rounded-xl p-4 bg-gray-800 shadow-md flex flex-col self-start"
           :data-status-id="status.id"
-        > <!-- :style="{ backgroundColor: status.color || '#ffffff' }" -->
+        >
+          <!-- :style="{ backgroundColor: status.color || '#ffffff' }" -->
           <!-- Header -->
           <header class="flex justify-between items-center mb-3">
-            <h2
-              class=" text-base text-white font-semibold truncate"
-            > <!-- :style="{ color: getTextColor(status.color) }" -->
+            <h2 class="text-base text-white font-semibold truncate">
+              <!-- :style="{ color: getTextColor(status.color) }" -->
               {{ status.name }}
             </h2>
 
@@ -54,7 +55,7 @@
                       d="M6 18L18 6M6 6l12 12"
                     />
                   </svg>
-                  Удалить 
+                  Удалить
                 </button>
                 <p v-for="task in tasks">{{}}</p>
               </div>
@@ -65,12 +66,14 @@
           <draggable
             :list="tasksByStatus(status.id)"
             group="tasks"
+            ghost-class="ghost"
+            item-key="id"
             @start="onDragStart"
             @end="(evt) => onDragEnd(evt, status.id)"
             class="flex-1 space-y-3 overflow-y-auto transition-all duration-300 ease-in-out"
-            item-key="id"
             :animation="200"
           >
+          
             <template #item="{ element: task }">
               <div
                 class="p-3 rounded-lg shadow-sm hover:shadow-md transition cursor-pointer"
@@ -83,38 +86,36 @@
                   class="cursor-move"
                   :text-color="getTextColor(task.color)"
                 />
-
               </div>
             </template>
           </draggable>
 
           <!-- Добавить карточку -->
           <button
-          @click="openNewTaskForm(status.id)"
-          class="mt-3 w-full flex items-center px-3 py-2 text-sm rounded-lg bg-transparent hover:shadow-sm hover:scale-[1.01] hover:backdrop-brightness-105 transition-all duration-200 ease-in-out cursor-pointer"
+            @click="openNewTaskForm(status.id)"
+            class="mt-3 w-full flex items-center px-3 py-2 text-sm rounded-lg bg-transparent hover:shadow-sm hover:scale-[1.01] hover:backdrop-brightness-105 transition-all duration-200 ease-in-out cursor-pointer"
           >
-          <div class="flex items-center space-x-2">
-            <svg
-              class="w-5 h-5 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-            <span class="text-white font-normal">Добавить карточку</span>
-          </div>
-        </button>
-
+            <div class="flex items-center space-x-2">
+              <svg
+                class="w-5 h-5 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              <span class="text-white font-normal">Добавить карточку</span>
+            </div>
+          </button>
         </section>
       </template>
     </draggable>
-    
+
     <!-- Add Status Column -->
     <section class="w-90 flex-shrink-0">
       <div
@@ -129,7 +130,10 @@
         </button>
       </div>
 
-      <div v-else class="mt-3 bg-neutral-900/90 border border-neutral-700 p-4 rounded-xl w-80 space-y-3 text-gray-200">
+      <div
+        v-else
+        class="mt-3 bg-neutral-900/90 border border-neutral-700 p-4 rounded-xl w-80 space-y-3 text-gray-200"
+      >
         <div class="flex items-center space-x-2">
           <input
             v-model="newStatusName"
@@ -169,14 +173,12 @@
   </div>
 
   <!-- New Task Form Modal -->
-<div
+  <div
     v-if="showTaskForm"
-    class="fixed inset-0 flex items-center justify-center z-50
-           bg-neutral-900/90 backdrop-blur-md border border-neutral-700 text-gray-200"
+    class="fixed inset-0 flex items-center justify-center z-50 bg-neutral-900/90 backdrop-blur-md border border-neutral-700 text-gray-200"
   >
     <div
-      class="w-full max-w-lg p-8 rounded-xl shadow-2xl
-             bg-neutral-900/90 backdrop-blur-md border border-neutral-700 text-gray-200"
+      class="w-full max-w-lg p-8 rounded-xl shadow-2xl bg-neutral-900/90 backdrop-blur-md border border-neutral-700 text-gray-200"
     >
       <h3 class="text-2xl font-bold mb-6">Создать новую задачу</h3>
       <form @submit.prevent="handleCreateTask" class="space-y-5">
@@ -211,7 +213,10 @@
 
         <!-- Assign To -->
         <div>
-          <label class="block mb-1 font-medium text-gray-200" for="assigned_to_id">
+          <label
+            class="block mb-1 font-medium text-gray-200"
+            for="assigned_to_id"
+          >
             Назначить
           </label>
           <select
@@ -349,10 +354,10 @@ export default {
 
       try {
         await Promise.all(
-        updates.map((u) =>
-          api.patch(`/tasks/statuses/${u.id}/`, { order: u.order })
-        )
-      );
+          updates.map((u) =>
+            api.patch(`/tasks/statuses/${u.id}/`, { order: u.order })
+          )
+        );
 
         this.statuses = [...this.statuses];
 
@@ -362,25 +367,19 @@ export default {
       }
     },
     onDragStart(evt) {
-      // Drag boshlanganda bevosita dragged elementga rotate beramiz
       const el = evt.item;
       if (el) {
-        // Smooth anim bo‘lishi uchun transition o‘rnatamiz.
-        // Agar Tailwind orqali `transition-transform duration-200` qo‘yilgan bo‘lsa,
-        // JS orqali ham o‘rnatish muammo bo‘lmaydi, lekin bir marta o‘rnatish yetarli.
-        el.style.transition = 'transform 0.2s';
-        el.style.transform = 'rotate(5deg)';
+        el.classList.add("drag-hidden");
       }
     },
     onDragEnd(evt, oldStatusId) {
-          const el = evt.item;
-          if (el) {
-            el.style.transform = '';
-            // el.style.transition = '';
-          }
-          // Mavjud logikani chaqirish: status o‘zgarishini serverga yuborish va qayta fetch
-          this.onTaskReorder(evt, oldStatusId);
-        },
+      const el = evt.item;
+      if (el) {
+        el.classList.remove("drag-hidden");
+      }
+      this.onTaskReorder(evt, oldStatusId);
+    },  
+
     async onTaskReorder(evt, oldStatusId) {
       const task = evt.item.__draggable_context.element;
       const newStatusId = Number(
@@ -486,7 +485,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .flex-1::-webkit-scrollbar {
   width: 6px;
 }
@@ -494,4 +493,17 @@ export default {
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 3px;
 }
+
+.ghost {
+  transform: rotate(5deg);
+  transition: transform 0.2s ease;
+  opacity: 1;
+  z-index: 100;
+}
+
+.drag-hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
 </style>

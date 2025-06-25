@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Status, Task, SimpleTask
+from .models import Status, Task, SimpleTask, TaskMarkedUser
 from django.utils.translation import gettext_lazy as _
 from import_export.admin import ImportExportModelAdmin
 from django.utils.html import format_html
@@ -60,7 +60,21 @@ class StatusAdmin(admin.ModelAdmin):
 #         }),
 #     )
     
+class TaskMarkedUserInline(admin.TabularInline):
+    model = TaskMarkedUser
+    extra = 1  # Qo‘shimcha 1 ta bo‘sh qator ko‘rsatadi
+    autocomplete_fields = ['user']
+
+class TaskAdmin(admin.ModelAdmin):
+    inlines = [TaskMarkedUserInline]
+    list_display = ('title', 'assigned_to', 'due_date', 'is_archived')
+    search_fields = ['title', 'description']
+
+admin.site.register(Task, TaskAdmin)    
+    
+    
+    
 admin.site.register(Status, StatusAdmin)
-admin.site.register(Task) #, TaskAdmin
+#admin.site.register(Task) #, TaskAdmin
 
 admin.site.register(SimpleTask)

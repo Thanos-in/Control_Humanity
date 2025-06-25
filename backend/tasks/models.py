@@ -21,7 +21,7 @@ class Status(models.Model):
                 return f"{self.project.name} – {self.name}"
 
             return self.name
-    
+        
 class Task(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
@@ -40,6 +40,7 @@ class Task(models.Model):
     )
     marked_to = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
+        through='TaskMarkedUser',
         related_name='task_to_be_marked',
         limit_choices_to={'role': 'employee'},
         blank=True,
@@ -60,6 +61,7 @@ class Task(models.Model):
     due_date = models.DateTimeField(null=True, blank=True)
     color = models.CharField(max_length=7, default='#FFFFFF')
     is_archived = models.BooleanField(default=False)
+    done = models.BooleanField(default=False)
     module = models.ForeignKey(Module, on_delete=models.CASCADE,
                                 related_name='tasks', null=True, blank=True)
 
@@ -85,4 +87,14 @@ class SimpleTask(models.Model):
     
     def __str__(self):
         return self.title
+    
+class TaskMarkedUser(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    order = models.PositiveIntegerField()
+
+    class Meta:
+        unique_together = ('task', 'user')
+        ordering = ['order']     
+
 

@@ -44,98 +44,98 @@
           />
         </div>
         
-<div class="flex justify-start items-start space-x-4">
-    <!-- Участники (под заголовком) -->
-    <div class="relative flex items-center space-x-2 mb-6">
-      <span class="text-sm text-gray-400">Участники</span>
-      <div class="flex items-center gap-2">
-        <div
-          v-for="id in newTask.marked_to_id"
-          :key="id"
-          class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-xs"
-          :title="getUserName(id)"
-        >
-          {{ initials(getUserName(id)) }}
-        </div>
-        <button
-          @click.stop="showParticipants = !showParticipants"
-          ref="participantButton"
-          class="w-8 h-8 rounded-full bg-white/10 border border-gray-600 flex items-center justify-center text-gray-200 hover:bg-white/20"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-5 h-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+    <div class="flex justify-start items-start space-x-4">
+      <!-- Участники (под заголовком) -->
+      <div class="relative flex items-center space-x-2 mb-6">
+        <span class="text-sm text-gray-400">Участники</span>
+        <div class="flex items-center gap-2">
+          <div
+            v-for="id in newTask.marked_to_id"
+            :key="id"
+            class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-xs"
+            :title="getUserName(id)"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 4v16m8-8H4"
-            />
-          </svg>
-        </button>
-      </div>
+            {{ initials(getUserName(id)) }}
+          </div>
+          <button
+            @click.stop="showParticipants = !showParticipants; showLabels = false"
+            ref="participantButton"
+            class="w-8 h-8 rounded-full bg-white/10 border border-gray-600 flex items-center justify-center text-gray-200 hover:bg-white/20"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+          </button>
+        </div>
 
-      <!-- Participants Dropdown -->
-      <div
-        v-if="showParticipants"
-        ref="participantDropdown"
-        @click.stop
-        class="absolute left-0 top-10 bg-[#1e1f22] border border-gray-600 rounded shadow-lg w-64 z-50"
-      >
-        <div class="p-2">
-          <input
-            v-model="participantSearch"
-            type="text"
-            placeholder="Поиск участников"
-            class="w-full p-2 bg-[#2a2c2e] border border-gray-600 rounded text-sm text-gray-200 placeholder-gray-500 focus:outline-none"
-          />
-        </div>
-        <div class="max-h-48 overflow-y-auto">
-          <label
-            v-for="u in filteredUsers"
-            :key="u.id"
-            class="flex items-center px-3 py-2 hover:bg-gray-700 cursor-pointer"
-            @click="toggleParticipant(u.id)"
-          >
-            <div
-              class="flex-shrink-0 w-6 h-6 mr-3 rounded-full bg-green-600 text-white flex items-center justify-center text-xs"
+        <!-- Participants Dropdown -->
+        <div
+          v-if="showParticipants"
+          ref="participantDropdown"
+          @click.stop
+          class="absolute left-0 top-10 bg-[#1e1f22] border border-gray-600 rounded shadow-lg w-64 z-50"
+        >
+          <div class="p-2">
+            <input
+              v-model="participantSearch"
+              type="text"
+              placeholder="Поиск участников"
+              class="w-full p-2 bg-[#2a2c2e] border border-gray-600 rounded text-sm text-gray-200 placeholder-gray-500 focus:outline-none"
+            />
+          </div>
+          <div class="max-h-48 overflow-y-auto">
+            <label
+              v-for="u in filteredUsers"
+              :key="u.id"
+              class="flex items-center px-3 py-2 hover:bg-gray-700 cursor-pointer"
+              @click="toggleParticipant(u.id)"
             >
-              {{ initials(u.username) }}
-            </div>
-            <span class="flex-1 text-sm text-gray-200">{{ u.username }}</span>
-            <span
-              v-if="newTask.marked_to_id.includes(u.id)"
-              class="text-gray-400"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+              <div
+                class="flex-shrink-0 w-6 h-6 mr-3 rounded-full bg-green-600 text-white flex items-center justify-center text-xs"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </span>
-          </label>
+                {{ initials(u.username) }}
+              </div>
+              <span class="flex-1 text-sm text-gray-200">{{ u.username }}</span>
+              <span
+                v-if="newTask.marked_to_id.includes(u.id)"
+                class="text-gray-400"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </span>
+            </label>
+          </div>
         </div>
       </div>
-    </div>
 
     <!-- Метки кнопка ва Dropdown -->
     <div class="relative mb-6">
       <button
         ref="labelButton"
-        @click.stop="showLabels = !showLabels"
+        @click.stop="showLabels = !showLabels; showParticipants = false"
         class="px-3 py-1 flex items-center gap-2 bg-white/10 border border-gray-600 rounded-md text-gray-200 hover:bg-white/20"
       >
         <svg
@@ -334,7 +334,7 @@ export default {
         marked_to_id: [],
         assigned_to_id: null,
         due_date: "",
-        status_id: "39",
+        status_id: 1,
         color: "#FFFFFF",
       },
       showParticipants: false,
@@ -428,7 +428,7 @@ export default {
         marked_to_id: [],
         assigned_to_id: null,
         due_date: "",
-        status_id: "39",
+        status_id: 1,
         color: "#FFFFFF",
       };
       this.showParticipants = false;
